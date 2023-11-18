@@ -213,14 +213,18 @@ const List = (props: ListProps) => {
         };
     });
 
-    const extractOptions = (sessions: Array<Session>) => sessions.map((session: Session, index: number) => {
+    const extractOptions = (sessions: Array<Session>) =>{ 
+        if (!sessions){
+            return [];
+        }
+        sessions.map((session: Session, index: number) => {
         const option =
         {
             "value": "" + index,
             "label": session.mark
         };
         return option;
-    }) as Array<{ value: string, label: string }>
+    }) as Array<{ value: string, label: string }>}
 
     const update = (e: any, i: number) => {
         sessions[sessionIndex].fields[i].value = e.target.value;
@@ -236,7 +240,7 @@ const List = (props: ListProps) => {
                     name="Selecting a mark"
                     placeholder="Select a session"
                     className='text-black'
-                    searchable={true}
+                    isSearchable={true}
                     value={sessionIndex}
                     onChange={handleChange}
                     options={extractOptions(sessions)} // ts-ignore

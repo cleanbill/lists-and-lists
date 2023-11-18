@@ -1,6 +1,5 @@
 "use client"
 import List from "@/components/list";
-import Title from "@/components/title";
 import { useRef, useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { log } from '../utils/logUtils';
@@ -64,7 +63,10 @@ export default function Home() {
   }
 
   const updateTitle = (t:string) =>{
-    document.getElementById('title-input').value = t; //@ts-ignore
+    const field = document.getElementById('title-input') as HTMLInputElement;
+    if (field){
+      field.value = t;
+    }
     setTitle(t);
   }
 

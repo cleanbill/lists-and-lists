@@ -31,7 +31,7 @@ export const search = (
     while (found == null && titleIndex < gd.titles.length) {
       const td: TitleData = gd.titles[titleIndex];
       if (match(td.titleName)) {
-        found = { groupDataIndex, titleIndex };
+        found = { groupDataIndex, titleIndex, sessionIndex:td.sessions.length };
       } else {
         titleIndex = titleIndex + 1;
       }

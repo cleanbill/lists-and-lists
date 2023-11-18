@@ -21,9 +21,9 @@ const RepeatPicker = () => {
 
     return (
         <>
-            <input onChange={onChange} defaultValue={repeatQty} className="text-black w-10 ml-2 mr-2" maxLength={1} type="number"></input>
+            <input onChange={onChange} defaultValue={repeatQty} className="text-black w-14 ml-2 mr-2 rounded-xl p-2 m-1" maxLength={1} type="number"></input>
             <select
-                className="text-black h-10"
+                className="text-black h-10 rounded-xl p-2 m-1"
                 value={(repeatPeriod || '').toString().substring(0, 16)}
                 onChange={onSelect}
                 id="pick-time"

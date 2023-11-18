@@ -16,7 +16,7 @@ const TimePicker = () => {
     return (
         <>
             <input
-                className="text-black h-10"
+                className="text-black h-10 rounded m-1 p-1"
                 min={min}
                 id={'pick-time-'+title}
                 type="datetime-local"

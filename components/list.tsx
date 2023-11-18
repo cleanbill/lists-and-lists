@@ -5,7 +5,6 @@ import { useLocalStorage } from 'usehooks-ts';
 import { search } from '../utils/searchUtils'
 import Select from 'react-select';
 import { RepeatPeriod, TimedNote } from '@/types';
-import { title } from 'process';
 
 export type ListProps = {
     title: string,
@@ -17,27 +16,27 @@ const convert = (oldSessions: any): Array<Session> => Object.keys(oldSessions).m
 
 const List = (props: ListProps) => {
 
+    const [searchText, _setSearchText] = useLocalStorage('searchText', '');
 
-
-    const [searchText, setSearchText_] = useLocalStorage('searchText', '');
     const [groups, setGroups] = useLocalStorage('groups', new Array<GroupData>());
     const [groupDataIndex, setGroupDataIndex] = useLocalStorage('groupDataIndex', 0);
     const [titleIndex, setTitleIndex] = useLocalStorage('titleIndex', 0);
     const [sessions, setSessions] = useState([] as Array<Session>);
-    const [sessionIndex, setSessionIndex] = useLocalStorage('sessionIndex',0);
+    const [sessionIndex, setSessionIndex] = useLocalStorage('sessionIndex', 0);
     const [fieldIndex, setFieldIndex] = useState(0);
-    const [repeatPeriod, setRepeatPeriod_] = useLocalStorage('repeatPeriod',RepeatPeriod.None);
-    const [repeatQty, setRepeatQty_] = useLocalStorage('repeatQty',0);
-    const [displayAt, setDisplayAt_] = useLocalStorage('displayAt', "");
-    const [timestampSave, setTimestampSave] = useLocalStorage('timestampSave',false);
+    const [repeatPeriod, _setRepeatPeriod_] = useLocalStorage('repeatPeriod', RepeatPeriod.None);
+    const [repeatQty, _setRepeatQty] = useLocalStorage('repeatQty', 0);
+    const [displayAt, _setDisplayAt] = useLocalStorage('displayAt', "");
+    const [timestampSave, setTimestampSave] = useLocalStorage('timestampSave', false);
 
     useEffect(() => {
         const found = search(searchText, groups);
-        if (!found) {
-            console.log('not found ', searchText);
+        if (found) {
+            setCurrentState(found);
             return;
         }
-        setCurrentState(found);
+        console.log('not found ', searchText);
+        props.updateTitle('');
     }, [searchText, groupDataIndex, titleIndex, props.title])
 
     const reindex = (fields: Array<Field>): Array<Field> => {
@@ -94,8 +93,8 @@ const List = (props: ListProps) => {
         setSessions([...sessions]);
     }
 
-    const switchTimeStampSave = (ev:any) =>{
-        const value:boolean= ev.target.checked;
+    const switchTimeStampSave = (ev: any) => {
+        const value: boolean = ev.target.checked;
         setTimestampSave(value);
     }
 
@@ -128,7 +127,7 @@ const List = (props: ListProps) => {
         groups[groupDataIndex].titles = [
             {
                 titleName: props.title,
-                timestampSave, 
+                timestampSave,
                 sessions: new Array<Session>(),
                 displayAt,
                 repeatPeriod,
@@ -155,8 +154,10 @@ const List = (props: ListProps) => {
         if (found) {
             console.log('switched title to ', props.title);
             setCurrentState(found);
-                groups[groupDataIndex].titles[titleIndex].sessions = [currentSession];
+            groups[groupDataIndex].titles[titleIndex].sessions = [currentSession];
             return;
+        } else {
+            props.updateTitle('');
         }
         groups[groupDataIndex].titles.push(
             {
@@ -171,14 +172,14 @@ const List = (props: ListProps) => {
 
     }
 
-    const updateSession = () =>{
+    const updateSession = () => {
         const titleData = groups[groupDataIndex].titles[titleIndex];
         titleData.displayAt = displayAt;
         titleData.repeatPeriod = repeatPeriod;
         titleData.repeatQty = repeatQty;
-        if (timestampSave){
-            const newSession = {... titleData.sessions[sessionIndex]};
-            newSession.no = newSession.no +1;
+        if (timestampSave) {
+            const newSession = { ...titleData.sessions[sessionIndex] };
+            newSession.no = newSession.no + 1;
             newSession.mark = makeMark();
             titleData.sessions.push(newSession);
         } else {
@@ -197,9 +198,9 @@ const List = (props: ListProps) => {
             updateSession();
         }
         setGroups([...groups]);
-        const timedNote:TimedNote = {
+        const timedNote: TimedNote = {
             time: displayAt,
-            id: props.title, 
+            id: props.title,
             repeatPeriod,
             repeatQty
         }
@@ -230,7 +231,7 @@ const List = (props: ListProps) => {
     return (
         <span>
 
-            {sessions?.length > 1 &&  
+            {sessions?.length > 1 &&
                 <Select
                     name="Selecting a mark"
                     placeholder="Select a session"
@@ -249,7 +250,7 @@ const List = (props: ListProps) => {
                         <button title='Indent' className="bg-slate-500 ml-2 ps-0 w-5 h-6 mr-1 rounded-lg text-sm ">+</button>
                         {f.fieldType != 'list' && <input key={'quest-' + f.id + index} className="h-10 ps-2 pe-2 m-1 lg:w-4/12 rounded-md" placeholder="Question"></input>}
                         {f.fieldType != 'list' && <input key={'answ-' + f.id + index} className="h-10 ps-2 pe-2 m-1 lg:w-6/12 rounded-md" placeholder="Answer"></input>}
-                        {f.fieldType == 'list' && <input key={props.title+'-input-' + f.id + index} onChange={(e) => update(e, index)} defaultValue={f.value} id={'general-input-' + index} onKeyUp={(e) => keyup(e, f.fieldType, index)} autoFocus={index == fieldIndex} className="h-10 ps-2 pe-2 m-1 lg:w-10/12 rounded-md" placeholder="Answer"></input>}
+                        {f.fieldType == 'list' && <input key={props.title + '-input-' + f.id + index} onChange={(e) => update(e, index)} defaultValue={f.value} id={'general-input-' + index} onKeyUp={(e) => keyup(e, f.fieldType, index)} autoFocus={index == fieldIndex} className="h-10 ps-2 pe-2 m-1 lg:w-10/12 rounded-md" placeholder="Answer"></input>}
                         <button title='Switch Type' className=" ps-0 w-5 h-6 mr-1 rounded-lg text-sm ">...</button>
                         <button onClick={() => add(f.fieldType, index)} title='Add field' className="bg-green-400 hover:bg-green-600 active:bg-green-700 focus:outline-none focus:ring focus:ring-green-300 ps-0 w-10 h-6 mr-1 rounded-lg text-sm ">ADD</button>
                         <br></br>
@@ -259,9 +260,9 @@ const List = (props: ListProps) => {
             <span className='grid grid-cols-[10fr,1.5fr,1fr]'>
                 <div></div>
                 <label htmlFor='timestamp-switch' className='float-right text-black'>Timestamp save</label>
-                <input onChange={switchTimeStampSave} value={timestampSave+''} id='timestamp-switch' type="checkbox" className=" float-right text-black p-3"></input>
+                <input onChange={switchTimeStampSave} value={timestampSave + ''} id='timestamp-switch' type="checkbox" className=" float-right text-black p-3"></input>
             </span>
-            <button onClick={() => save()} className="float-right ml-10 mt-2 bg-violet-500 hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300  rounded-xl text-black p-3 ">Save</button>
+            <button onClick={() => save()} className="float-right mr-1 ml-10 mt-2 mb-3 bg-violet-500 hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300  rounded-xl text-black p-3 ">Save</button>
 
         </span>
     )

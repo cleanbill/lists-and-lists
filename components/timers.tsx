@@ -10,7 +10,6 @@ const Timers = (props:Props) => {
 
     const [timedNotes, setTimedNotes] = useLocalStorage('timedNotes', [] as Array<TimedNote>);
 
-
     return (
 
         timedNotes?.map((f: TimedNote, index: number) => (
@@ -20,7 +19,9 @@ const Timers = (props:Props) => {
                 <button onClick={()=> props.discard(f.id)} className="text-red-500">x</button>
             </div>
 
-        )))
+        ))
+        
+        )
 
 }
 

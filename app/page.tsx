@@ -62,9 +62,9 @@ export default function Home() {
     workerRef.current?.postMessage(message);
   }
 
-  const updateTitle = (t:string) =>{
+  const updateTitle = (t: string) => {
     const field = document.getElementById('title-input') as HTMLInputElement;
-    if (field){
+    if (field) {
       field.value = t;
     }
     setTitle(t);
@@ -73,11 +73,15 @@ export default function Home() {
 
   const toggleSidePanel = () => {
     const toggled = !showTimers;
-    setShowTimers(toggled);
+    if (!document.startViewTransition) { 
+      setShowTimers(toggled);
+      return;
+    }
+    document.startViewTransition(() => setShowTimers(toggled)); 
   }
 
   return (
-    <main className={showTimers ?"m-0 background-[#b0c4de] grid grid-cols-[2fr,11fr]":"m-0 background-[#b0c4de]"}>
+    <main className={showTimers ? "m-0 background-[#b0c4de] grid grid-cols-[2fr,11fr]" : "m-0 background-[#b0c4de]"}>
       {showTimers && <div className="float-left mt-10 bg-amber-300 p-2">
         <button className='float-right mt-2 mb-3 bg-violet-500 hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300  rounded-xl text-black h-8 p-1' onClick={toggleSidePanel}>X</button>
         <Timers discard={discard}></Timers>

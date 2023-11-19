@@ -7,7 +7,6 @@ import Select from 'react-select';
 import { RepeatPeriod, TimedNote } from '@/types';
 
 export type ListProps = {
-    title: string,
     updateTitle: Function
     addTimedNote: Function
 }
@@ -17,6 +16,7 @@ const convert = (oldSessions: any): Array<Session> => Object.keys(oldSessions).m
 const List = (props: ListProps) => {
 
     const [searchText, _setSearchText] = useLocalStorage('searchText', '');
+    const [title, setTitle] = useLocalStorage('title', '');
 
     const [groups, setGroups] = useLocalStorage('groups', new Array<GroupData>());
     const [groupDataIndex, setGroupDataIndex] = useLocalStorage('groupDataIndex', 0);
@@ -24,20 +24,24 @@ const List = (props: ListProps) => {
     const [sessions, setSessions] = useState([] as Array<Session>);
     const [sessionIndex, setSessionIndex] = useLocalStorage('sessionIndex', 0);
     const [fieldIndex, setFieldIndex] = useState(0);
+    const [showSavingToast, setShowSavedToast] = useState(false);
     const [repeatPeriod, _setRepeatPeriod_] = useLocalStorage('repeatPeriod', RepeatPeriod.None);
     const [repeatQty, _setRepeatQty] = useLocalStorage('repeatQty', 0);
     const [displayAt, _setDisplayAt] = useLocalStorage('displayAt', "");
     const [timestampSave, setTimestampSave] = useLocalStorage('timestampSave', false);
 
     useEffect(() => {
+        if (!searchText) {
+            return;
+        }
         const found = search(searchText, groups);
         if (found) {
             setCurrentState(found);
             return;
         }
         console.log('not found ', searchText);
-        props.updateTitle('');
-    }, [searchText, groupDataIndex, titleIndex, props.title])
+        setTitle('');
+    }, [searchText, groupDataIndex, titleIndex])
 
     const reindex = (fields: Array<Field>): Array<Field> => {
         return fields.filter((f: Field) => f != null)
@@ -55,18 +59,24 @@ const List = (props: ListProps) => {
         const sessions = Array.isArray(title.sessions) ? title.sessions : convert(title.sessions).filter((s: Session) => s.mark.trim().length > 0);
         setSessions([...sessions]);
         setSessionIndex(sessions.length - 1);
+        setTitle(title.titleName);
         props.updateTitle(title.titleName);
     }
 
     const getFields = (): Array<Field> => {
+        if (sessionIndex < 0){
+            setSessionIndex(0);
+        }
         if (!sessions[sessionIndex]) {
+
             sessions[sessionIndex] = {
                 no: sessionIndex,
                 group: '',
-                title: props.title,
+                title: title,
                 mark: '',
                 fields: Array<Field>()
             }
+            setSessions([...sessions]);
             return [] as Array<Field>;
         }
         return sessions[sessionIndex].fields;
@@ -82,6 +92,11 @@ const List = (props: ListProps) => {
             value: '',
             indent: 0
         } as Field;
+        if (fields.length == 0) {
+            sessions[sessionIndex].fields = [newField];
+            setSessions([...sessions]);
+            return;
+        }
         if (fields.length - 1 == index) {
             sessions[sessionIndex].fields = [...fields, newField];
         } else {
@@ -126,7 +141,7 @@ const List = (props: ListProps) => {
         }
         groups[groupDataIndex].titles = [
             {
-                titleName: props.title,
+                titleName: title,
                 timestampSave,
                 sessions: new Array<Session>(),
                 displayAt,
@@ -148,20 +163,18 @@ const List = (props: ListProps) => {
 
     const changeTitle = () => {
         const currentSession = groups[groupDataIndex].titles[titleIndex].sessions[sessionIndex];
-        currentSession.title = props.title;
+        currentSession.title = title;
         currentSession.mark = makeMark();
-        const found = search(props.title, groups);
+        const found = search(title, groups);
         if (found) {
-            console.log('switched title to ', props.title);
+            console.log('switched title to ', title);
             setCurrentState(found);
             groups[groupDataIndex].titles[titleIndex].sessions = [currentSession];
             return;
-        } else {
-            props.updateTitle('');
         }
         groups[groupDataIndex].titles.push(
             {
-                titleName: props.title,
+                titleName: title,
                 timestampSave,
                 sessions: new Array<Session>(),
                 displayAt,
@@ -185,26 +198,35 @@ const List = (props: ListProps) => {
         } else {
             titleData.sessions = sessions;
         }
-        titleData.titleName = props.title;
+        titleData.titleName = title;
         groups[groupDataIndex].titles[titleIndex] = titleData;
     }
 
     const save = () => {
+        setShowSavedToast(true);
+        setTimeout(() => setShowSavedToast(false), 5000);
+        const saveBut = document.getElementById('save-button') as HTMLButtonElement;
+        saveBut.disabled = true;
         if (!groups[groupDataIndex]) {
             createDefault();
-        } else if (sessions[sessionIndex].title != props.title) {
+        } else if (sessions[sessionIndex].title != title) {
             changeTitle();
         } else {
             updateSession();
         }
+        groups[groupDataIndex].titles = groups[groupDataIndex].titles.filter(title => title.titleName != '');
         setGroups([...groups]);
-        const timedNote: TimedNote = {
-            time: displayAt,
-            id: props.title,
-            repeatPeriod,
-            repeatQty
+        if (displayAt && displayAt.length > 19) {
+            const timedNote: TimedNote = {
+                time: displayAt,
+                id: title,
+                repeatPeriod,
+                repeatQty
+            }
+            props.addTimedNote(timedNote);
         }
-        props.addTimedNote(timedNote);
+        saveBut.disabled = false;
+
     }
 
     const [handleChange] = useState(() => {
@@ -213,18 +235,19 @@ const List = (props: ListProps) => {
         };
     });
 
-    const extractOptions = (sessions: Array<Session>) =>{ 
-        if (!sessions){
+    const extractOptions = (sessions: Array<Session>) => {
+        if (!sessions) {
             return [];
         }
         sessions.map((session: Session, index: number) => {
-        const option =
-        {
-            "value": "" + index,
-            "label": session.mark
-        };
-        return option;
-    }) as Array<{ value: string, label: string }>}
+            const option =
+            {
+                "value": "" + index,
+                "label": session.mark
+            };
+            return option;
+        }) as Array<{ value: string, label: string }>
+    }
 
     const update = (e: any, i: number) => {
         sessions[sessionIndex].fields[i].value = e.target.value;
@@ -254,7 +277,7 @@ const List = (props: ListProps) => {
                         <button title='Indent' className="bg-slate-500 ml-2 ps-0 w-5 h-6 mr-1 rounded-lg text-sm ">+</button>
                         {f.fieldType != 'list' && <input key={'quest-' + f.id + index} className="h-10 ps-2 pe-2 m-1 lg:w-4/12 rounded-md" placeholder="Question"></input>}
                         {f.fieldType != 'list' && <input key={'answ-' + f.id + index} className="h-10 ps-2 pe-2 m-1 lg:w-6/12 rounded-md" placeholder="Answer"></input>}
-                        {f.fieldType == 'list' && <input key={props.title + '-input-' + f.id + index} onChange={(e) => update(e, index)} defaultValue={f.value} id={'general-input-' + index} onKeyUp={(e) => keyup(e, f.fieldType, index)} autoFocus={index == fieldIndex} className="h-10 ps-2 pe-2 m-1 lg:w-10/12 rounded-md" placeholder="Answer"></input>}
+                        {f.fieldType == 'list' && <input key={title + '-input-' + f.id + index} onChange={(e) => update(e, index)} defaultValue={f.value} id={'general-input-' + index} onKeyUp={(e) => keyup(e, f.fieldType, index)} autoFocus={index == fieldIndex} className="h-10 ps-2 pe-2 m-1 lg:w-10/12 rounded-md" placeholder="Answer"></input>}
                         <button title='Switch Type' className=" ps-0 w-5 h-6 mr-1 rounded-lg text-sm ">...</button>
                         <button onClick={() => add(f.fieldType, index)} title='Add field' className="bg-green-400 hover:bg-green-600 active:bg-green-700 focus:outline-none focus:ring focus:ring-green-300 ps-0 w-10 h-6 mr-1 rounded-lg text-sm ">ADD</button>
                         <br></br>
@@ -266,7 +289,8 @@ const List = (props: ListProps) => {
                 <label htmlFor='timestamp-switch' className='float-right text-black'>Timestamp save</label>
                 <input onChange={switchTimeStampSave} value={timestampSave + ''} id='timestamp-switch' type="checkbox" className=" float-right text-black p-3"></input>
             </span>
-            <button onClick={() => save()} className="float-right mr-1 ml-10 mt-2 mb-3 bg-violet-500 hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300  rounded-xl text-black p-3 ">Save</button>
+            <button id='save-button' onClick={() => save()} className="float-right mr-1 ml-10 mt-2 mb-3 bg-violet-500 hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300  rounded-xl text-black p-3 ">Save</button>
+            {showSavingToast && <label onClick={() => save()} className=" mr-1 ml-10 mt-2 mb-3 bg-red-200 rounded-xl text-black p-3 ">Saved</label>}
 
         </span>
     )

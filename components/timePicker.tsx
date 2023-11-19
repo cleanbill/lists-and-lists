@@ -7,6 +7,7 @@ const TimePicker = () => {
 
     const onChange = (ev: any) => {
         if (!ev.target['validity'].valid) return;
+        if (!ev.target['value']) return;
         const value= ev.target['value'] + ':00Z';
         setDisplayAt(value);
     };

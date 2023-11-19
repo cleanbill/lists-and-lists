@@ -100,10 +100,10 @@ export default function Home() {
         </search>
 
         <section className="text-white mt-3 w-full ">
-          <input id='title-input' defaultValue={title} className="text-black w-9/12 h-10 ps-2 pe-2 ml-3 mr-3 mt-3 mb-2" placeholder="Title"></input>
+          <input id='title-input' defaultValue={title} onChange={(e) => setTitle(e.target.value)} className="text-black w-9/12 h-10 ps-2 pe-2 ml-3 mr-3 mt-3 mb-2" placeholder="Title"></input>
           <TimePicker ></TimePicker>
           <RepeatPicker ></RepeatPicker>
-          <List addTimedNote={addTimedNote} title={title} updateTitle={updateTitle}></List>
+          <List addTimedNote={addTimedNote} updateTitle={updateTitle}></List>
           {!showTimers && <button className='float-left ml-1 mt-2 mb-3 bg-violet-500 hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300  rounded-xl text-black p-3' onClick={toggleSidePanel}>List</button>}
         </section>
       </div>

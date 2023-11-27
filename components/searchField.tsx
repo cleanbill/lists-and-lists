@@ -17,13 +17,13 @@ const SearchField = () => {
 
     useEffect(()=>{
         const field = document.getElementById('search-input') as HTMLInputElement;
-        if (current.searchText != field.value){
+        if (current.searchText != field.value ){
             log('searching for',field.value);
             setSearchText(current.searchText);
         } else {
-            log('search text the same',field.value);
+            log('search text the same',current.searchText);
         }
-    }, [current])
+    }, [current.searchText])
         
     const setSearchText = (text:string) => {
         if (!text) {

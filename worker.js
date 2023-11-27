@@ -1,3 +1,4 @@
+"use client"
 const timeDisplay = (date = new Date()) =>
   new Intl.DateTimeFormat("default", {
     hour: "numeric",

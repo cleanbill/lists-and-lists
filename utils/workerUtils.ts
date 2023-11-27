@@ -1,16 +1,11 @@
 import { TimedNoteEvent, TimedNoteCommand, TimedNote, TimedNoteAction, RepeatPeriod } from "@/types";
 import { log } from "./logUtils";
 
-const worker  = new Worker(new URL('../worker.js', import.meta.url));
+let worker:any = null;
 
-let ready = false;
-
-export const setup = (timedNotes: Array<TimedNote>,setSearchText: Function, setTimedNotes: Function) => {
-    if (ready){
-        return;
-    }
-    ready = true;
-    worker.onmessage = (evnt: MessageEvent<TimedNoteEvent>) => {
+export const setup = (w:any)=>{
+    worker = w;
+    return (timedNotes: Array<TimedNote>,setSearchText: Function, setTimedNotes: Function) => (evnt: MessageEvent<TimedNoteEvent>) => {
         const command = evnt.data.command;
         const list = evnt.data.list;
         if (command == TimedNoteCommand.Display) {
@@ -24,13 +19,7 @@ export const setup = (timedNotes: Array<TimedNote>,setSearchText: Function, setT
             setTimedNotes([...list]);
         }
     };
-    worker?.postMessage({ command: 'Load', 'timedNote': timedNotes });
-    return () => {
-        worker?.terminate()
-    }
 };
-
-
 
 export const addTimedNote = (timedNote: TimedNote) => {
 

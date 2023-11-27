@@ -1,5 +1,6 @@
 import { CURRENT, CurrentState, DEFAULT_CURRENT, DEFAULT_STATE, DISPLAY_AT, FIELDS, Field, LIST_AND_LISTS, LIST_TITLE, REPEAT_PERIOD, REPEAT_QTY, TIMESTAMP_SAVE } from "@/app/model";
 import { RepeatPeriod } from "@/types";
+import { log } from "@/utils/logUtils";
 import { SearchResults, search } from "@/utils/searchUtils";
 import { useEffect } from "react";
 import { useLocalStorage } from "usehooks-ts";
@@ -17,14 +18,18 @@ const SearchField = () => {
     useEffect(()=>{
         const field = document.getElementById('search-input') as HTMLInputElement;
         if (current.searchText != field.value){
+            log('searching for',field.value);
             setSearchText(current.searchText);
+        } else {
+            log('search text the same',field.value);
         }
-    }, [current.searchText])
+    }, [current])
         
     const setSearchText = (text:string) => {
         if (!text) {
             return;
         }
+        
         const found = search(text, state.lists);
         if (found) {
             const list = state.lists[found.listIndex];

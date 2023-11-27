@@ -16,7 +16,7 @@ const timeDisplay = (date = new Date()) => {
   }
 };
 
-const log = (message: string, data = {}) =>
+const log = (message: string, data: {} | unknown = {}) =>
   console.log(timeDisplay(), message, data);
 
 export { log, timeDisplay, timeStringDisplay };

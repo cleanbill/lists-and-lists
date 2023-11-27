@@ -1,4 +1,5 @@
 import { RepeatPeriod } from "@/types";
+import { makeMark } from "@/utils/saveUtils";
 
 export enum FieldComponentType {
     NONE = "N/A",
@@ -24,17 +25,92 @@ export enum FieldType {
     "list" = "list"
 }
 
-const fieldTypesArray = ():Array<String> =>{
+const fieldTypesArray = (): Array<String> => {
     const result = new Array<String>();
     for (let fieldType in FieldType) {
         const add = isNaN(parseInt(fieldType));
-        if (add){
+        if (add) {
             result.push(fieldType);
         }
     }
     return result;
 }
-export {fieldTypesArray};
+export { fieldTypesArray };
+
+export const LIST_AND_LISTS = 'listsAndLists';
+export const CURRENT = 'current';
+export const FIELDS = 'fields';
+export const SEARCH_TEXT = 'searchText';
+export const LIST_TITLE = 'title';
+export const TIMESTAMP_SAVE = 'timestampSave';
+export const DISPLAY_AT = 'displayAt';
+export const REPEAT_PERIOD = 'repeatPeriod';
+export const REPEAT_QTY = 'repeatQty';
+export const TIMED_NOTES = 'timedNotes';
+
+export const DEFAULT_STATE: StoredState = {
+    lists: [] as Array<ListData>
+}
+
+export const DEFAULT_CURRENT: CurrentState = {
+    listIndex: 0,
+    sessionIndex: 0,
+    searchText: ""
+}
+
+export const DEFAULT_SESSION: ListSession = {
+    mark: makeMark(),
+    fields: []
+}
+
+export const DEFAULT_LIST: ListData = {
+    listTitle: "",
+    timestampSave: false,
+    sessions: [DEFAULT_SESSION],
+    displayAt: null,
+    repeatPeriod: RepeatPeriod.None,
+    repeatQty: 0
+}
+
+export type CurrentState = {
+    listIndex: number;
+    sessionIndex: number;
+    searchText: string;
+}
+
+export type UpdateState = {
+    current: CurrentState;
+    stored: StoredState;
+    ui: UIData;
+    allowOverwrite: boolean;
+}
+
+export type StoredState = {
+    lists: Array<ListData>
+}
+export type ListData = {
+    listTitle: string,
+    timestampSave: boolean,
+    sessions: Array<ListSession>
+    displayAt: string | null,
+    repeatPeriod: RepeatPeriod,
+    repeatQty: number
+}
+
+export type UIData = {
+    listTitle: string,
+    timestampSave: boolean,
+    fields: Array<Field>
+    displayAt: string | null,
+    repeatPeriod: RepeatPeriod,
+    repeatQty: number
+}
+
+
+export type ListSession = {
+    mark: string,
+    fields: Array<Field>
+}
 
 export type Field = {
     id: number;
@@ -46,28 +122,6 @@ export type Field = {
     indent: number;
 }
 
-export type Session = {
-    no: number,
-    group: string,
-    title: string,
-    mark: string,
-    fields: Array<Field>
-}
-
-export type GroupData = {
-    groupName: string,
-    titles: Array<TitleData>,
-    display: boolean
-}
-
-export type TitleData = {
-    titleName: string,
-    timestampSave: boolean,
-    sessions: Array<Session>
-    displayAt: string | null,
-    repeatPeriod: RepeatPeriod,
-    repeatQty: number
-}
 
 
-export type Matcher = (haystack:string) => boolean;
+export type Matcher = (haystack: string) => boolean;

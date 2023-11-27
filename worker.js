@@ -23,7 +23,7 @@ const addToDate = (qtyString, period, now = new Date()) => {
   if (period == RepeatPeriod.Days) {
     now.setDate(now.getDate() + qty);
   } else if (period == RepeatPeriod.Weeks) {
-    now.setDate(now.getDate() + (qtY * 7));
+    now.setDate(now.getDate() + (qty * 7));
   } else if (period == RepeatPeriod.Months) {
     now.setMonth(now.getMonth() + qty);
   } else if (period == RepeatPeriod.Years) {

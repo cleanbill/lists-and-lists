@@ -3,7 +3,7 @@ import { useLocalStorage } from "usehooks-ts";
 const TimePicker = () => {
 
     const [displayAt, setDisplayAt] = useLocalStorage('displayAt', "");
-    const [title, setTitle] = useLocalStorage('title', '');
+    const [title, _setTitle] = useLocalStorage('title', '');
 
     const onChange = (ev: any) => {
         if (!ev.target['validity'].valid) return;

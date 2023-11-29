@@ -2,7 +2,7 @@
 import { Field, FieldComponentType, FieldType, ListSession, DEFAULT_STATE, DEFAULT_LIST, DEFAULT_CURRENT, LIST_AND_LISTS, CURRENT, FIELDS, LIST_TITLE, TIMESTAMP_SAVE, CurrentState, DEFAULT_SESSION } from '@/app/model';
 import { useLocalStorage } from 'usehooks-ts';
 import Select from 'react-select';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const List = () => {
 
@@ -14,6 +14,10 @@ const List = () => {
     const [timestampSave, setTimestampSave] = useLocalStorage(TIMESTAMP_SAVE, false);
 
     const [fieldIndex, setFieldIndex] = useState(-1);
+
+    useEffect( () =>{
+        setFieldIndex(-1);
+    }, [fields])
 
     const add = (fieldType: string, index: number) => {
         const newField = {
@@ -41,14 +45,6 @@ const List = () => {
     const switchTimeStampSave = (ev: any) => {
         const value: boolean = ev.target.checked;
         setTimestampSave(value);
-    }
-
-    const getSession = (): ListSession => {
-        const list = state.lists[current.listIndex];
-        if (!list || !list.sessions) {
-            return DEFAULT_SESSION;
-        }
-        return list.sessions[current.sessionIndex];
     }
 
     const take = (index: number) => {
@@ -112,6 +108,18 @@ const List = () => {
             }
             <div>
                 {fields.map((f: Field, index: number) => (
+                                        // <ListRow key={f.id + index + ''} 
+                                        // index={index} 
+                                        // showTake={fields.length > 1} 
+                                        // fieldType={f.fieldType} 
+                                        // value={f.value} 
+                                        // focus={index == fieldIndex} 
+                                        // take={take} 
+                                        // add={add} 
+                                        // update={update} 
+                                        // keyup={keyup}>
+                                       
+                                        // </ListRow>           
                     f != null && <span className="text-black" key={"span-" + f.id + index}>
                         {fields.length > 1 && <button onClick={() => take(index)} title='Delete' className="bg-red-400  hover:bg-red-600 active:bg-red-700 focus:outline-none focus:ring focus:ring-red-300 ps-0 ml-1 w-5 h-6 mr-1 rounded-lg text-sm ">D</button>}
                         
@@ -119,10 +127,10 @@ const List = () => {
                         
                         <button title='Indent' className="bg-slate-500 ml-2 ps-0 w-5 h-6 mr-1 rounded-lg text-sm ">+</button>
                         
-                        {f.fieldType != 'list' && <input key={'quest-' + f.id + index} className="h-10 ps-2 pe-2 m-1 lg:w-4/12 rounded-md" placeholder="Question"></input>}
-                        {f.fieldType != 'list' && <input key={'answ-' + f.id + index} className="h-10 ps-2 pe-2 m-1 lg:w-6/12 rounded-md" placeholder="Answer"></input>}
+                        {f.fieldType != FieldType.list && <input key={'quest-' + f.id + index} className="h-10 ps-2 pe-2 m-1 lg:w-4/12 rounded-md" placeholder="Question"></input>}
+                        {f.fieldType != FieldType.list && <input key={'answ-' + f.id + index} className="h-10 ps-2 pe-2 m-1 lg:w-6/12 rounded-md" placeholder="Answer"></input>}
                         
-                        {f.fieldType == 'list' && <input key={listTitle + '-input-' + f.id + index} onChange={(e) => update(e, index)} defaultValue={f.value} id={'general-input-' + index} onKeyUp={(e) => keyup(e, f.fieldType, index)} autoFocus={index == fieldIndex} className="h-10 ps-2 pe-2 m-1 lg:w-10/12 rounded-md" placeholder="Answer"></input>}
+                        {f.fieldType == FieldType.list && <input key={listTitle + '-input-' + f.id + index} onChange={(e) => update(e, index)} defaultValue={f.value} onKeyUp={(e) => keyup(e, f.fieldType, index)} autoFocus={index == fieldIndex} className="h-10 ps-2 pe-2 m-1 lg:w-10/12 rounded-md" placeholder="Answer"></input>}
                         
                         <button title='Switch Type' className=" ps-0 w-5 h-6 mr-1 rounded-lg text-sm ">...</button>
                         

@@ -2,7 +2,6 @@
 import List from "@/components/list";
 import { useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import { log } from '../utils/logUtils';
 import { TimedNote } from "@/types";
 import TimePicker from "@/components/timePicker";
 import RepeatPicker from "@/components/repeatPicker";
@@ -16,7 +15,7 @@ import SidePanelButton from "@/components/sidePanelButton";
 
 export default function Home() {
 
- const workerRef = useRef<Worker>()
+  const workerRef = useRef<Worker>()
 
   const [current, setCurrent] = useLocalStorage(CURRENT, DEFAULT_CURRENT);
   const [timedNotes, setTimedNotes] = useLocalStorage(TIMED_NOTES, [] as Array<TimedNote>);
@@ -55,8 +54,8 @@ export default function Home() {
 
         <section className="text-white mt-3 w-full ">
           <TitleField></TitleField>
-          <TimePicker ></TimePicker>
-          <RepeatPicker ></RepeatPicker>
+          <TimePicker></TimePicker>
+          <RepeatPicker></RepeatPicker>
           <List></List>
           {!showTimers && <SidePanelButton toggleSidePanel={toggleSidePanel}></SidePanelButton>}
         </section>

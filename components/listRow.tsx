@@ -26,7 +26,7 @@ export const ListRow = (prop: Props) => {
             {prop.fieldType != FieldType.list && <input key={'quest-' + prop.id} className="h-10 ps-2 pe-2 m-1 lg:w-4/12 rounded-md" placeholder="Question"></input>}
             {prop.fieldType != FieldType.list && <input key={'answ-' + prop.id} className="h-10 ps-2 pe-2 m-1 lg:w-6/12 rounded-md" placeholder="Answer"></input>}
 
-            {prop.fieldType == FieldType.list && <input key={'input-' + prop.id} onChange={(e) => prop.update(e, prop.index)} defaultValue={prop.value} id={'general-input-' + prop.id} onKeyUp={(e) => prop.keyup(e, prop.fieldType, prop.index)} autoFocus={prop.focus} className="h-10 ps-2 pe-2 m-1 lg:w-10/12 rounded-md" placeholder="Answer"></input>}
+            {prop.fieldType == FieldType.list && <input key={'input-' + prop.id} onChange={(e) => prop.update(e, prop.index)} defaultValue={prop.value} id={'general-input-' + prop.index} onKeyUp={(e) => prop.keyup(e, prop.fieldType, prop.index)} autoFocus={prop.focus} className="h-10 ps-2 pe-2 m-1 lg:w-10/12 rounded-md" placeholder="Answer"></input>}
 
             <button key={'switch-' + prop.id} title='Switch Type' className=" ps-0 w-5 h-6 mr-1 rounded-lg text-sm ">...</button>
 

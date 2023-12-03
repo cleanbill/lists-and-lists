@@ -90,6 +90,7 @@ const List = () => {
     const update = (e: any, i: number) => {
         fields[i].value = e.target.value;
         setFields([...fields]);
+        setFieldIndex(i);
     }
 
     const lastFieldIndex = fields.length || 0;

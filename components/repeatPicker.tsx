@@ -26,9 +26,8 @@ const RepeatPicker = () => {
                 className="text-black h-10 rounded-xl p-2 m-1"
                 value={(repeatPeriod || '').toString().substring(0, 16)}
                 onChange={onSelect}
-                id="pick-time"
-                name="pick-time"
-                defaultValue="None"
+                id="repeatPeriod"
+                name="repeatPeriod"
             >
                 <option value="None">None</option>
                 <option value="Days">Days</option>

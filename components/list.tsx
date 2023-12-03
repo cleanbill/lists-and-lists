@@ -3,6 +3,7 @@ import { Field, FieldComponentType, FieldType, ListSession, DEFAULT_STATE, DEFAU
 import { useLocalStorage } from 'usehooks-ts';
 import Select from 'react-select';
 import { useEffect, useState } from 'react';
+import ListRow from './listRow';
 
 const List = () => {
 
@@ -15,7 +16,7 @@ const List = () => {
 
     const [fieldIndex, setFieldIndex] = useState(-1);
 
-    useEffect( () =>{
+    useEffect(() => {
         setFieldIndex(-1);
     }, [fields])
 
@@ -48,7 +49,8 @@ const List = () => {
     }
 
     const take = (index: number) => {
-        setFields(fields.filter((_f: Field, i: number) => i != index));
+        const newFields = fields.filter((_f: Field, i: number) => i != index);
+        setFields([...newFields]);
     }
 
     const keyup = (e: React.KeyboardEvent<HTMLInputElement>, fieldType: string, index: number) => {
@@ -108,36 +110,20 @@ const List = () => {
             }
             <div>
                 {fields.map((f: Field, index: number) => (
-                                        // <ListRow key={f.id + index + ''} 
-                                        // index={index} 
-                                        // showTake={fields.length > 1} 
-                                        // fieldType={f.fieldType} 
-                                        // value={f.value} 
-                                        // focus={index == fieldIndex} 
-                                        // take={take} 
-                                        // add={add} 
-                                        // update={update} 
-                                        // keyup={keyup}>
-                                       
-                                        // </ListRow>           
-                    f != null && <span className="text-black" key={"span-" + f.id + index}>
-                        {fields.length > 1 && <button onClick={() => take(index)} title='Delete' className="bg-red-400  hover:bg-red-600 active:bg-red-700 focus:outline-none focus:ring focus:ring-red-300 ps-0 ml-1 w-5 h-6 mr-1 rounded-lg text-sm ">D</button>}
-                        
-                        <button title='Do it tomorrow' className="bg-slate-500 ml-2 ps-0 w-5 h-6 mr-1 rounded-lg text-sm ">T</button>
-                        
-                        <button title='Indent' className="bg-slate-500 ml-2 ps-0 w-5 h-6 mr-1 rounded-lg text-sm ">+</button>
-                        
-                        {f.fieldType != FieldType.list && <input key={'quest-' + f.id + index} className="h-10 ps-2 pe-2 m-1 lg:w-4/12 rounded-md" placeholder="Question"></input>}
-                        {f.fieldType != FieldType.list && <input key={'answ-' + f.id + index} className="h-10 ps-2 pe-2 m-1 lg:w-6/12 rounded-md" placeholder="Answer"></input>}
-                        
-                        {f.fieldType == FieldType.list && <input key={listTitle + '-input-' + f.id + index} onChange={(e) => update(e, index)} defaultValue={f.value} onKeyUp={(e) => keyup(e, f.fieldType, index)} autoFocus={index == fieldIndex} className="h-10 ps-2 pe-2 m-1 lg:w-10/12 rounded-md" placeholder="Answer"></input>}
-                        
-                        <button title='Switch Type' className=" ps-0 w-5 h-6 mr-1 rounded-lg text-sm ">...</button>
-                        
-                        <button onClick={() => add(f.fieldType, index)} title='Add field' className="bg-green-400 hover:bg-green-600 active:bg-green-700 focus:outline-none focus:ring focus:ring-green-300 ps-0 w-10 h-6 mr-1 rounded-lg text-sm ">ADD</button>
-                        
-                        <br></br>
-                    </span>))}
+                    <ListRow
+                        key={listTitle + '-' + index + '-' + f.value + '-' + f.id}
+                        id={listTitle + '-' + index + '-' + f.value + '-' + f.id}
+                        index={index}
+                        showTake={fields.length > 1}
+                        fieldType={f.fieldType}
+                        value={f.value}
+                        focus={index == fieldIndex}
+                        take={take}
+                        add={add}
+                        update={update}
+                        keyup={keyup}></ListRow>
+
+                ))}
             </div>
             {(fields.length == 0) && <button onClick={() => add(FieldType.list, lastFieldIndex)} title='Add field' className="bg-green-400 hover:bg-green-600 active:bg-green-700 focus:outline-none focus:ring focus:ring-green-300 ps-0 w-10 h-6 mr-1 rounded-lg text-sm ">ADD</button>}
             <span className='grid grid-cols-[10fr,1.5fr,1fr]'>

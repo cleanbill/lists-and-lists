@@ -12,9 +12,9 @@ import SearchField from "@/components/searchField";
 import TitleField from "@/components/titleField";
 import SidePanel from "@/components/sidePanel";
 import SidePanelButton from "@/components/sidePanelButton";
+import { log } from "@/utils/logUtils";
 
 export default function Home() {
-
   const workerRef = useRef<Worker>()
 
   const [current, setCurrent] = useLocalStorage(CURRENT, DEFAULT_CURRENT);
@@ -27,12 +27,17 @@ export default function Home() {
   }
 
   useEffect(() => {
-    workerRef.current = new Worker(new URL('../worker.js', import.meta.url));
-    const onMessageFn = setup(workerRef.current);
-    workerRef.current.onmessage = onMessageFn(timedNotes, setSearchText, setTimedNotes);
-    workerRef.current?.postMessage({ command: 'Load', 'timedNote': timedNotes });
-    return () => {
-      workerRef.current?.terminate()
+    log('Page render');
+    try {
+      workerRef.current = new Worker(new URL('../worker.js', import.meta.url));
+      const onMessageFn = setup(workerRef.current);
+      workerRef.current.onmessage = onMessageFn(timedNotes, setSearchText, setTimedNotes);
+      workerRef.current?.postMessage({ command: 'Load', 'timedNote': timedNotes });
+      return () => {
+        workerRef.current?.terminate()
+      }
+    } catch (er) {
+      console.error('worker failed ', er);
     }
   }, [])
 
@@ -47,11 +52,10 @@ export default function Home() {
 
   return (
     <main className={showTimers ? "m-0 background-[#b0c4de] grid grid-cols-[2fr,11fr]" : "m-0 background-[#b0c4de]"}>
-      {showTimers && <SidePanel discard={discard} toggleSidePanel={toggleSidePanel}></SidePanel>}
-
-      <div className={showTimers ? "mt-10 text-black" : "mt-10 text-black"}>
+      {showTimers &&
+        <SidePanel discard={discard} toggleSidePanel={toggleSidePanel}></SidePanel>}
+      <article className={showTimers ? "mt-10 text-black" : "mt-10 text-black"}>
         <SearchField></SearchField>
-
         <section className="text-white mt-3 w-full ">
           <TitleField></TitleField>
           <TimePicker></TimePicker>
@@ -60,7 +64,7 @@ export default function Home() {
           {!showTimers && <SidePanelButton toggleSidePanel={toggleSidePanel}></SidePanelButton>}
         </section>
         <SaveButton></SaveButton>
-      </div>
+      </article>
     </main>
   )
 }

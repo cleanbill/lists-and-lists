@@ -12,29 +12,29 @@ const SAVE_BUTTON_ID = 'save-button';
 const SaveButton = () => {
 
     const [state, setState] = useLocalStorage(LIST_AND_LISTS, DEFAULT_STATE);
-    const [current, setCurrent] = useLocalStorage(CURRENT, DEFAULT_CURRENT);
+    const [current, _setCurrent] = useLocalStorage(CURRENT, DEFAULT_CURRENT);
 
     const [showSavingToast, setShowSavedToast] = useState(false);
     const [showDuplicateToast, setDuplicateToast] = useState(false);
-    const [allowOverwrite, setAllowOverwrite] = useState(false);
 
-    const getUpdateState = (): UpdateState => {
+    const getUpdateState = (allowOverwrite = false): UpdateState => {
+        const ui = obtainUI();
         const updateState: UpdateState = {
             current,
             stored: state,
-            ui: obtainUI(),
+            ui,
             allowOverwrite
         };
         return updateState;
     }
 
 
-    const saveClicked = () => {
+    const saveClicked = (override = false) => {
         setShowSavedToast(true);
         setTimeout(() => setShowSavedToast(false), 5000);
         const saveBut = document.getElementById(SAVE_BUTTON_ID) as HTMLButtonElement;
         saveBut.disabled = true;
-        const updateState = getUpdateState();
+        const updateState = getUpdateState(override);
         try {
             const state = applyUpdate(updateState);
             setState(state);
@@ -63,8 +63,8 @@ const SaveButton = () => {
         <>
 
             <button id={SAVE_BUTTON_ID} onClick={() => saveClicked()} className="float-right mr-1 ml-10 mt-2 mb-3 bg-violet-500 hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300  rounded-xl text-black p-3 ">Save</button>
-            {showSavingToast && <label className=" mr-1 ml-10 mt-2 mb-3 bg-red-200 rounded-xl text-black p-3 ">Saved</label>}
-            {showDuplicateToast && <label className=" mr-1 ml-10 mt-2 mb-3 bg-red-200 rounded-xl text-black p-3 ">Cannot Save Duplicate List</label>}
+            {showSavingToast && <label className="float-left mr-1 ml-2 mt-2 mb-1 bg-red-200 rounded-xl text-black p-3 ">Saved</label>}
+            {showDuplicateToast && <button onClick={() => saveClicked(true)} className=" mr-1 ml-10 mt-2 mb-3 bg-red-200 rounded-xl text-black p-3 ">Cannot Save Duplicate List</button>}
         </>
     )
 }

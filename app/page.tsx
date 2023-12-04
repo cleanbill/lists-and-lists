@@ -13,6 +13,7 @@ import TitleField from "@/components/titleField";
 import SidePanel from "@/components/sidePanel";
 import SidePanelButton from "@/components/sidePanelButton";
 import { log } from "@/utils/logUtils";
+import TimeStampSaveTick from "@/components/timestampSaveTick";
 
 export default function Home() {
   const workerRef = useRef<Worker>()
@@ -54,13 +55,16 @@ export default function Home() {
     <main className={showTimers ? "m-0 background-[#b0c4de] grid grid-cols-[2fr,11fr]" : "m-0 background-[#b0c4de]"}>
       {showTimers &&
         <SidePanel discard={discard} toggleSidePanel={toggleSidePanel}></SidePanel>}
-      <article className={showTimers ? "mt-10 text-black" : "mt-10 text-black"}>
+      <article className={showTimers ? "mt-1 text-black" : "mt-1 text-black"}>
         <SearchField></SearchField>
         <section className="text-white mt-3 w-full ">
-          <TitleField></TitleField>
-          <TimePicker></TimePicker>
-          <RepeatPicker></RepeatPicker>
+          <div className="grid grid-cols-[10fr,2fr,0fr,1fr]">
+            <TitleField></TitleField>
+            <TimePicker></TimePicker>
+            <RepeatPicker></RepeatPicker>
+          </div>
           <List></List>
+          <TimeStampSaveTick></TimeStampSaveTick>
           {!showTimers && <SidePanelButton toggleSidePanel={toggleSidePanel}></SidePanelButton>}
         </section>
         <SaveButton></SaveButton>

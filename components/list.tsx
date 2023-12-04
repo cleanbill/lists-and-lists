@@ -12,7 +12,6 @@ const List = () => {
 
     const [fields, setFields] = useLocalStorage(FIELDS, DEFAULT_LIST.sessions[0].fields)
     const [listTitle, _setListTitle] = useLocalStorage(LIST_TITLE, "");
-    const [timestampSave, setTimestampSave] = useLocalStorage(TIMESTAMP_SAVE, false);
 
     const [fieldIndex, setFieldIndex] = useState(-1);
 
@@ -41,11 +40,6 @@ const List = () => {
             setFields([...fieldsBefore, newField, ...fieldsAfter].filter((f: Field) => f != null));
         }
         setFieldIndex(index + 1);
-    }
-
-    const switchTimeStampSave = (ev: any) => {
-        const value: boolean = ev.target.checked;
-        setTimestampSave(value);
     }
 
     const take = (index: number) => {
@@ -96,7 +90,7 @@ const List = () => {
     const lastFieldIndex = fields.length || 0;
 
     return (
-        <span>
+        <div>
 
             {state?.lists[current.listIndex]?.sessions?.length > 1 &&
                 <Select
@@ -109,30 +103,23 @@ const List = () => {
                     options={extractOptions(state.lists[current.listIndex].sessions)}
                 />
             }
-            <div>
-                {fields.map((f: Field, index: number) => (
-                    <ListRow
-                        key={listTitle + '-' + index + '-' + f.value + '-' + f.id}
-                        id={listTitle + '-' + index + '-' + f.value + '-' + f.id}
-                        index={index}
-                        showTake={fields.length > 1}
-                        fieldType={f.fieldType}
-                        value={f.value}
-                        focus={index == fieldIndex}
-                        take={take}
-                        add={add}
-                        update={update}
-                        keyup={keyup}></ListRow>
+            {fields.map((f: Field, index: number) => (
+                <ListRow
+                    key={listTitle + '-' + index + '-' + f.value + '-' + f.id}
+                    id={listTitle + '-' + index + '-' + f.value + '-' + f.id}
+                    index={index}
+                    showTake={fields.length > 1}
+                    fieldType={f.fieldType}
+                    value={f.value}
+                    focus={index == fieldIndex}
+                    take={take}
+                    add={add}
+                    update={update}
+                    keyup={keyup}></ListRow>
 
-                ))}
-            </div>
+            ))}
             {(fields.length == 0) && <button onClick={() => add(FieldType.list, lastFieldIndex)} title='Add field' className="bg-green-400 hover:bg-green-600 active:bg-green-700 focus:outline-none focus:ring focus:ring-green-300 ps-0 w-10 h-6 mr-1 rounded-lg text-sm ">ADD</button>}
-            <span className='grid grid-cols-[10fr,1.5fr,1fr]'>
-                <div></div>
-                <label htmlFor='timestamp-switch' className='float-right text-black'>Timestamp save</label>
-                <input onChange={switchTimeStampSave} value={timestampSave + ''} id='timestamp-switch' type="checkbox" className=" float-right text-black p-3"></input>
-            </span>
-        </span>
+        </div>
     )
 
 }

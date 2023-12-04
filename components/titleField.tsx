@@ -35,7 +35,7 @@ const TitleField = () => {
         <>
             <input id={'title-input'} defaultValue={title}
                 onChange={(e) => changed(e.target.value)}
-                className="text-black w-2/6 h-10 ps-2 pe-2 ml-3 mr-3 mt-3 mb-2" placeholder="Title"></input>
+                className="text-black h-10 ps-2 pe-2 mr-1 ml-3 mr-3 mt-3 mb-2" placeholder="Title"></input>
             {showDuplicateToast && <label className=" mr-1 ml-10 mt-2 mb-3 bg-red-200 rounded-xl text-black p-3 ">
                 Duplicate List Title</label>}</>
     )

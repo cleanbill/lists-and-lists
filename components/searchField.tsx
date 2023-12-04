@@ -77,18 +77,18 @@ const SearchField = () => {
         field.value = '';
     }
 
-    return (<search className="grid grid-cols-[0fr,12fr]">
+    return (<search className="grid grid-cols-[0fr,12fr] mr-2">
         <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
-            className="h-5 w-4">
+            className="h-5 ml-3 mr-0 mt-3">
             <path
                 fillRule="evenodd"
                 d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
                 clipRule="evenodd" />
         </svg>
-        <input id='search-input' onBlur={gone} defaultValue={current.searchText} autoFocus onChange={(e) => setSearchText(e.target.value)} className='lg:ml-10 lg:w-10/12 sm:w-full h-10 ps-2 pe-2 rounded-lg' placeholder="Search"></input></search>
+        <input id='search-input' onBlur={gone} defaultValue={current.searchText} autoFocus onChange={(e) => setSearchText(e.target.value)} className='lg:ml-10 h-10 ps-2 pe-2 mt-1 rounded-lg' placeholder="Search"></input></search>
     )
 }
 

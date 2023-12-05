@@ -14,8 +14,8 @@ const TimeStampSaveTick = () => {
     return (
         <>
             <span className='float-right'>
-                <label htmlFor='timestamp-switch' className='mr-2 mt-1 text-xs text-black'>timestamp save</label>
-                <input onChange={switchTimeStampSave} value={timestampSave + ''} id='timestamp-switch' type="checkbox" className=" float-right text-black p-3 mt-2 mr-1"></input>
+                <label htmlFor='timestamp-switch' className='mr-2 mt-1 text-xs text-yellow-600'>timestamp save</label>
+                <input onChange={switchTimeStampSave} value={timestampSave + ''} id='timestamp-switch' type="checkbox" className=" float-right text-black p-3 mt-2 mr-3"></input>
             </span>
             <br></br>
         </>

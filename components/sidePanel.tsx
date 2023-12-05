@@ -5,6 +5,8 @@ type Props = {
     toggleSidePanel: Function
 }
 
+
+
 const SidePanel = (props: Props) => (<aside className="float-left mt-2 bg-amber-300 p-2 rounded-xl ml-1 mb-1">
     <span className="grid grid-cols-[11fr,1fr] h-7">
         <h1>UPCOMING LIST</h1>

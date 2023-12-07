@@ -21,14 +21,14 @@ const List = () => {
 
     const add = (fieldType: string, index: number) => {
         const newField = {
-            id: fields.length,
+            id: fields?.length,
             fieldComponentType: FieldComponentType.ETL,
             fieldName: '',
             fieldType,
             value: '',
             indent: 0
         } as Field;
-        if (fields.length == 0) {
+        if (fields == null || fields?.length == 0) {
             setFields([newField]);
             return;
         }
@@ -43,7 +43,7 @@ const List = () => {
     }
 
     const take = (index: number) => {
-        const newFields = fields.filter((_f: Field, i: number) => i != index);
+        const newFields = fields? fields.filter((_f: Field, i: number) => i != index): [];
         setFields([...newFields]);
     }
 
@@ -51,7 +51,7 @@ const List = () => {
         if (e.key != 'Enter') {
             return;
         }
-        if (index + 1 == fields.length) {
+        if (index + 1 == fields?.length) {
             add(fieldType, index);
         } else {
             setFieldIndex(index + 1);
@@ -82,12 +82,15 @@ const List = () => {
     }
 
     const update = (e: any, i: number) => {
+        if (!fields){
+            return
+        }
         fields[i].value = e.target.value;
         setFields([...fields]);
         setFieldIndex(i);
     }
 
-    const lastFieldIndex = fields.length || 0;
+    const lastFieldIndex = fields?.length || 0;
 
     return (
         <div>
@@ -103,7 +106,7 @@ const List = () => {
                     options={extractOptions(state.lists[current.listIndex].sessions)}
                 />
             }
-            {fields.map((f: Field, index: number) => (
+            {fields?.map((f: Field, index: number) => (
                 <ListRow
                     key={listTitle + '-' + index + '-' + f.value + '-' + f.id}
                     id={listTitle + '-' + index + '-' + f.value + '-' + f.id}
@@ -118,7 +121,7 @@ const List = () => {
                     keyup={keyup}></ListRow>
 
             ))}
-            {(fields.length == 0) && <button onClick={() => add(FieldType.list, lastFieldIndex)} title='Add field' className="bg-green-400 hover:bg-green-600 active:bg-green-700 focus:outline-none focus:ring focus:ring-green-300 ps-0 w-10 h-6 mr-1 rounded-lg text-sm ">ADD</button>}
+            {(fields?.length == 0) && <button onClick={() => add(FieldType.list, lastFieldIndex)} title='Add field' className="bg-green-400 hover:bg-green-600 active:bg-green-700 focus:outline-none focus:ring focus:ring-green-300 ps-0 w-10 h-6 mr-1 rounded-lg text-sm ">ADD</button>}
         </div>
     )
 

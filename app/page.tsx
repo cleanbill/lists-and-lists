@@ -14,6 +14,7 @@ import SidePanel from "@/components/sidePanel";
 import SidePanelButton from "@/components/sidePanelButton";
 import { log } from "@/utils/logUtils";
 import TimeStampSaveTick from "@/components/timestampSaveTick";
+import Notes from "@/components/notes";
 
 export default function Home() {
   const workerRef = useRef<Worker>()
@@ -64,6 +65,7 @@ export default function Home() {
             <RepeatPicker></RepeatPicker>
           </div>
           <List></List>
+          <Notes key={current?.listIndex||"unset"}></Notes>
           <TimeStampSaveTick></TimeStampSaveTick>
           {!showTimers && <SidePanelButton toggleSidePanel={toggleSidePanel}></SidePanelButton>}
         </section>

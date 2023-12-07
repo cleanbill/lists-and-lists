@@ -22,6 +22,7 @@ const createListData = (ui: UIData, listData = DEFAULT_LIST, sessionIndex = 0): 
     const newListData = updateListData(ui,listData);
     newListData.sessions[sessionIndex].mark = makeMark();
     newListData.sessions[sessionIndex].fields = ui.fields;
+    newListData.sessions[sessionIndex].note = ui.note;
     return newListData;
 }
 
@@ -55,7 +56,7 @@ const updateSession = (updateState: UpdateState):StoredState => {
     if (updateState.ui.timestampSave) {
         const newSession:ListSession = {
             mark: makeMark(),
-            fields: updateState.ui.fields
+            note: updateState.ui.note
         };
         const updatedList = updateListData(updateState.ui,storedList);
         updatedList.sessions.push(newSession);

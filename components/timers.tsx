@@ -1,6 +1,6 @@
+import { SEARCH_EVENT } from "@/app/model";
 import { TimedNote } from "@/types";
 import { timeStringDisplay } from "@/utils/logUtils";
-import Link from "next/link";
 import { useLocalStorage } from "usehooks-ts";
 
 type Props = {
@@ -10,7 +10,6 @@ type Props = {
 const Timers = (props: Props) => {
 
     const [timedNotes, _setTimedNotes] = useLocalStorage('timedNotes', [] as Array<TimedNote>);
-
 
     const format = () =>{
         const notes = timedNotes.sort((a:TimedNote,b:TimedNote)=>{
@@ -27,6 +26,11 @@ const Timers = (props: Props) => {
         return noteGroup;
     }
 
+    const setSearchText = (text: string) => {
+        const ce = new CustomEvent(SEARCH_EVENT, {detail: text});
+        document.dispatchEvent(ce);
+    }
+
     const notes = format();
     const noteDates = Object.keys(notes);
 
@@ -37,7 +41,7 @@ const Timers = (props: Props) => {
                 <h2 className="text-sm">{noteDate}</h2>
                 {notes[noteDate].map((f:TimedNote, index: number) => (
                     <span key={"timer-"+index + f.id} className="grid grid-cols-[9fr,2fr,0fr] gap-1 text-yellow-700">
-                        <Link key={"title-"+index + f.id} href={"?title="+f.id}>{f.id}  </Link>
+                        <button key={"title-"+index + f.id} onClick={(ev) => setSearchText(f.id)}>{f.id}</button>
                         <label key={'time-' + index + f.id} title={f.time}>{timeStringDisplay("" + f.time)}</label>
                         <button key={'del-time-' + index + f.id} onClick={() => props.discard(f.id)} className="text-red-500">x</button>
                     </span>

@@ -40,6 +40,7 @@ export { fieldTypesArray };
 export const LIST_AND_LISTS = 'listsAndLists';
 export const CURRENT = 'current';
 export const FIELDS = 'fields';
+export const NOTES = 'notes';
 export const SEARCH_TEXT = 'searchText';
 export const LIST_TITLE = 'title';
 export const TIMESTAMP_SAVE = 'timestampSave';
@@ -47,6 +48,9 @@ export const DISPLAY_AT = 'displayAt';
 export const REPEAT_PERIOD = 'repeatPeriod';
 export const REPEAT_QTY = 'repeatQty';
 export const TIMED_NOTES = 'timedNotes';
+export const SEARCH_EVENT = 'searchEvent';
+
+export type Note = Object | null;
 
 export const DEFAULT_STATE: StoredState = {
     lists: [] as Array<ListData>
@@ -60,7 +64,7 @@ export const DEFAULT_CURRENT: CurrentState = {
 
 export const DEFAULT_SESSION: ListSession = {
     mark: makeMark(),
-    fields: []
+    note: null
 }
 
 export const DEFAULT_LIST: ListData = {
@@ -100,7 +104,8 @@ export type ListData = {
 export type UIData = {
     listTitle: string,
     timestampSave: boolean,
-    fields: Array<Field>
+    fields?: Array<Field>,
+    note: Note,
     displayAt: string | null,
     repeatPeriod: RepeatPeriod,
     repeatQty: number
@@ -109,7 +114,8 @@ export type UIData = {
 
 export type ListSession = {
     mark: string,
-    fields: Array<Field>
+    fields?: Array<Field>,
+    note: Note
 }
 
 export type Field = {

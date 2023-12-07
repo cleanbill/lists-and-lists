@@ -1,4 +1,4 @@
-import { CURRENT, CurrentState, DISPLAY_AT, FIELDS, LIST_TITLE, ListData, REPEAT_PERIOD, REPEAT_QTY, TIMESTAMP_SAVE, UIData } from "@/app/model";
+import { CURRENT, CurrentState, DISPLAY_AT, FIELDS, LIST_TITLE, ListData, NOTES, REPEAT_PERIOD, REPEAT_QTY, TIMESTAMP_SAVE, UIData } from "@/app/model";
 import { log } from "./logUtils";
 import { SearchResults } from "./searchUtils";
 
@@ -23,7 +23,7 @@ const getBooleanItem = (key: string): boolean =>{
     return item == 'true';
 }
 
-const getNUmberItem = (key: string): number =>{
+const getNumberItem = (key: string): number =>{
     const item = getItem(key);
     if (item.length == 0){
         return -1;
@@ -70,11 +70,14 @@ export const obtainUI = (): UIData => {
     const fields = getArrayItem(FIELDS);
     const displayAt = getItem(DISPLAY_AT);
     const repeatPeriod = getItem(REPEAT_PERIOD);
-    const repeatQty = getNUmberItem(REPEAT_QTY);
+    const repeatQty = getNumberItem(REPEAT_QTY);
+    const note = getItem(NOTES);
+
     return {
         'listTitle': listTitle,
         'timestampSave': timestampSave,
         'fields': fields,
+        'note':note,
         'displayAt': displayAt,
         'repeatPeriod': repeatPeriod,
         'repeatQty': repeatQty

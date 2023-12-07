@@ -1,4 +1,4 @@
-import { CURRENT, CurrentState, DEFAULT_CURRENT, DEFAULT_STATE, DISPLAY_AT, FIELDS, Field, LIST_AND_LISTS, LIST_TITLE, REPEAT_PERIOD, REPEAT_QTY, TIMESTAMP_SAVE } from "@/app/model";
+import { CURRENT, CurrentState, DEFAULT_CURRENT, DEFAULT_STATE, DISPLAY_AT, FIELDS, Field, LIST_AND_LISTS, LIST_TITLE, NOTES, REPEAT_PERIOD, REPEAT_QTY, TIMESTAMP_SAVE, Note, SEARCH_EVENT } from "@/app/model";
 import { RepeatPeriod } from "@/types";
 import { log } from "@/utils/logUtils";
 import { SearchResults, search } from "@/utils/searchUtils";
@@ -12,6 +12,7 @@ const SearchField = () => {
     const [_listTitle, setListTitle] = useLocalStorage(LIST_TITLE, '');
     const [_timestampSave, setTimestampSave] = useLocalStorage(TIMESTAMP_SAVE, false);
     const [_fields, setFields] = useLocalStorage(FIELDS, [] as Array<Field>);
+    const [_note, setNote] = useLocalStorage(NOTES, null as Note);
     const [_displayAt, setDisplayAt] = useLocalStorage(DISPLAY_AT, '');
     const [_repeatPeriod, setRepeatPeriod] = useLocalStorage(REPEAT_PERIOD, RepeatPeriod.None);
     const [_repeatQty, setRepeatQty] = useLocalStorage(REPEAT_QTY, 0);
@@ -19,6 +20,10 @@ const SearchField = () => {
     const searchParams = useSearchParams();
     let title = searchParams.get('title');
 
+    // @ts-ignore
+    document.addEventListener(SEARCH_EVENT, (customEvent: CustomEvent) => {
+        setSearchText(customEvent.detail);
+    });
 
     useEffect(() => {
         const field = document.getElementById('search-input') as HTMLInputElement;
@@ -41,24 +46,20 @@ const SearchField = () => {
 
         const found = search(text, state.lists);
         if (found) {
-            const list = state.lists[found.listIndex];
             setCurrentState(found, text);
             return;
         }
         console.log('not found ', text);
     }
 
-
-
-
-
     const setCurrentState = (found: SearchResults, searchText: string) => {
 
         const list = state.lists[found.listIndex];
         const session = list.sessions[found.sessionIndex];
-        const listsFields = session.fields;
+        const listsFields = session.fields || [];
         setListTitle(list.listTitle);
         setTimestampSave(list.timestampSave);
+        setNote(session.note)
         setFields(listsFields);
         setDisplayAt(list.displayAt || '');
         setRepeatPeriod(list.repeatPeriod);

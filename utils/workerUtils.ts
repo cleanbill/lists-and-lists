@@ -5,12 +5,12 @@ let worker:any = null;
 
 export const setup = (w:any)=>{
     worker = w;
-    return (timedNotes: Array<TimedNote>,setSearchText: Function, setTimedNotes: Function) => (evnt: MessageEvent<TimedNoteEvent>) => {
+    return (changeSearchText: Function, setTimedNotes: Function) => (evnt: MessageEvent<TimedNoteEvent>) => {
         const command = evnt.data.command;
         const list = evnt.data.list;
         if (command == TimedNoteCommand.Display) {
             log(`WebWorker Response => ${list[0].id}`);
-            setSearchText(evnt.data.list[0].id);
+            changeSearchText(evnt.data.list[0].id);
             // const el = document.getElementById('search-input') as HTMLInputElement;
             // el.value = evnt.data.list[0].id;
         }

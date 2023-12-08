@@ -67,7 +67,8 @@ const SearchField = () => {
         const newPlace: CurrentState = {
             listIndex: found.listIndex,
             sessionIndex: found.sessionIndex,
-            searchText
+            searchText,
+            unsaved: true
         };
         setCurrent(newPlace);
     }

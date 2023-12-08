@@ -12,7 +12,7 @@ const SAVE_BUTTON_ID = 'save-button';
 const SaveButton = () => {
 
     const [state, setState] = useLocalStorage(LIST_AND_LISTS, DEFAULT_STATE);
-    const [current, _setCurrent] = useLocalStorage(CURRENT, DEFAULT_CURRENT);
+    const [current, setCurrent] = useLocalStorage(CURRENT, DEFAULT_CURRENT);
 
     const [showSavingToast, setShowSavedToast] = useState(false);
     const [showDuplicateToast, setDuplicateToast] = useState(false);
@@ -30,8 +30,6 @@ const SaveButton = () => {
 
 
     const saveClicked = (override = false) => {
-        setShowSavedToast(true);
-        setTimeout(() => setShowSavedToast(false), 5000);
         const saveBut = document.getElementById(SAVE_BUTTON_ID) as HTMLButtonElement;
         saveBut.disabled = true;
         const updateState = getUpdateState(override);
@@ -46,6 +44,8 @@ const SaveButton = () => {
             saveBut.disabled = false;
             return;
         }
+        setShowSavedToast(true);
+        setTimeout(() => setShowSavedToast(false), 5000);
 
         if (updateState.ui.displayAt && updateState.ui.displayAt.length > 19) {
             const timedNote: TimedNote = {
@@ -57,6 +57,8 @@ const SaveButton = () => {
             addTimedNote(timedNote);
         }
         saveBut.disabled = false;
+        current.unsaved = false;
+        setCurrent(current);
     }
 
     return (

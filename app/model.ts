@@ -59,7 +59,8 @@ export const DEFAULT_STATE: StoredState = {
 export const DEFAULT_CURRENT: CurrentState = {
     listIndex: 0,
     sessionIndex: 0,
-    searchText: ""
+    searchText: "",
+    unsaved: false
 }
 
 export const DEFAULT_SESSION: ListSession = {
@@ -80,6 +81,7 @@ export type CurrentState = {
     listIndex: number;
     sessionIndex: number;
     searchText: string;
+    unsaved: boolean;
 }
 
 export type UpdateState = {

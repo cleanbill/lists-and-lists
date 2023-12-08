@@ -22,8 +22,13 @@ export default function Home() {
   const [current, setCurrent] = useLocalStorage(CURRENT, DEFAULT_CURRENT);
   const [timedNotes, setTimedNotes] = useLocalStorage(TIMED_NOTES, [] as Array<TimedNote>);
   const [showTimers, setShowTimers] = useState(timedNotes.length > 0);
+  const [blockedSwitchTitle, setBlockedSwitchTitle] = useState("");
 
-  const setSearchText = (t: string) => {
+  const switchToSearchText = (t: string) => {
+    if (current.unsaved){
+      setBlockedSwitchTitle(t);
+      return;
+    }
     current.searchText = t;
     setCurrent(current);
   }
@@ -33,7 +38,7 @@ export default function Home() {
     try {
       workerRef.current = new Worker(new URL('../worker.js', import.meta.url));
       const onMessageFn = setup(workerRef.current);
-      workerRef.current.onmessage = onMessageFn(timedNotes, setSearchText, setTimedNotes);
+      workerRef.current.onmessage = onMessageFn(switchToSearchText, setTimedNotes);
       workerRef.current?.postMessage({ command: 'Load', 'timedNote': timedNotes });
       return () => {
         workerRef.current?.terminate()
@@ -64,12 +69,13 @@ export default function Home() {
             <TimePicker></TimePicker>
             <RepeatPicker></RepeatPicker>
           </div>
-          <List></List>
+          {/* <List></List> */}
           <Notes key={current?.listIndex||"unset"}></Notes>
           <TimeStampSaveTick></TimeStampSaveTick>
           {!showTimers && <SidePanelButton toggleSidePanel={toggleSidePanel}></SidePanelButton>}
         </section>
         <SaveButton></SaveButton>
+        {blockedSwitchTitle && <label className=" mr-1 ml-10 mt-2 mb-3 bg-red-200 rounded-xl text-black p-3 ">Cannot switch to {blockedSwitchTitle}</label>}
       </article>
     </main>
   )

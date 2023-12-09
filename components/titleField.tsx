@@ -1,11 +1,11 @@
-import { CURRENT, DEFAULT_CURRENT, DEFAULT_STATE, LIST_AND_LISTS, LIST_TITLE } from "@/app/model";
+import { CURRENT_SESSION, DEFAULT_CURRENT, DEFAULT_STATE, LIST_AND_LISTS, LIST_TITLE } from "@/app/model";
 import { search } from "@/utils/searchUtils";
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 
 const TitleField = () => {
     const [title, setTitle] = useLocalStorage(LIST_TITLE, '');
-    const [current, _setCurrent] = useLocalStorage(CURRENT, DEFAULT_CURRENT);
+    const [current, _setCurrent] = useLocalStorage(CURRENT_SESSION, DEFAULT_CURRENT);
     const [state, _setState] = useLocalStorage(LIST_AND_LISTS, DEFAULT_STATE);
     const [showDuplicateToast, setDuplicateToast] = useState(false);
 

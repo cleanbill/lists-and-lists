@@ -7,7 +7,7 @@ import TimePicker from "@/components/timePicker";
 import RepeatPicker from "@/components/repeatPicker";
 import { discard, setup } from "@/utils/workerUtils";
 import SaveButton from "@/components/saveButton";
-import { CURRENT, DEFAULT_CURRENT, TIMED_NOTES } from "./model";
+import { CURRENT_SESSION, DEFAULT_CURRENT, SAVE_SWITCH_EVENT, TIMED_NOTES } from "./model";
 import SearchField from "@/components/searchField";
 import TitleField from "@/components/titleField";
 import SidePanel from "@/components/sidePanel";
@@ -16,16 +16,18 @@ import { log } from "@/utils/logUtils";
 import TimeStampSaveTick from "@/components/timestampSaveTick";
 import Notes from "@/components/notes";
 
+let workerStopped = true;
+
 export default function Home() {
   const workerRef = useRef<Worker>()
 
-  const [current, setCurrent] = useLocalStorage(CURRENT, DEFAULT_CURRENT);
+  const [current, setCurrent] = useLocalStorage(CURRENT_SESSION, DEFAULT_CURRENT);
   const [timedNotes, setTimedNotes] = useLocalStorage(TIMED_NOTES, [] as Array<TimedNote>);
   const [showTimers, setShowTimers] = useState(timedNotes.length > 0);
   const [blockedSwitchTitle, setBlockedSwitchTitle] = useState("");
 
   const switchToSearchText = (t: string) => {
-    if (current.unsaved){
+    if (current.unsaved) {
       setBlockedSwitchTitle(t);
       return;
     }
@@ -33,8 +35,15 @@ export default function Home() {
     setCurrent(current);
   }
 
-  useEffect(() => {
-    log('Page render');
+  const saveAndSwitch = () => {
+    const saveSwitchEvent = new CustomEvent(SAVE_SWITCH_EVENT, { detail: blockedSwitchTitle });
+    document.dispatchEvent(saveSwitchEvent);
+    setBlockedSwitchTitle("");
+  }
+
+  if (workerStopped) {
+    workerStopped = false;
+    log('worker setup');
     try {
       workerRef.current = new Worker(new URL('../worker.js', import.meta.url));
       const onMessageFn = setup(workerRef.current);
@@ -46,7 +55,7 @@ export default function Home() {
     } catch (er) {
       console.error('worker failed ', er);
     }
-  }, [])
+  }
 
   const toggleSidePanel = () => {
     const toggled = !showTimers;
@@ -70,12 +79,13 @@ export default function Home() {
             <RepeatPicker></RepeatPicker>
           </div>
           {/* <List></List> */}
-          <Notes key={current?.listIndex||"unset"}></Notes>
+          <Notes key={current?.listIndex || "unset"}></Notes>
           <TimeStampSaveTick></TimeStampSaveTick>
           {!showTimers && <SidePanelButton toggleSidePanel={toggleSidePanel}></SidePanelButton>}
         </section>
         <SaveButton></SaveButton>
-        {blockedSwitchTitle && <label className=" mr-1 ml-10 mt-2 mb-3 bg-red-200 rounded-xl text-black p-3 ">Cannot switch to {blockedSwitchTitle}</label>}
+        {blockedSwitchTitle && <button onClick={saveAndSwitch} className=" mr-1 ml-10 mt-2 mb-3 bg-red-200 rounded-xl text-black p-3 ">Unsaved - Cannot switch to {blockedSwitchTitle}</button>}
+        {/* {current.unsaved && <label className=" mr-1 ml-10 mt-2 mb-3 bg-red-200 rounded-xl text-black p-3 ">Unsaved</label>} */}
       </article>
     </main>
   )

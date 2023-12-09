@@ -1,13 +1,13 @@
 // @ts-ignore
 import { BlockNoteView, useBlockNote } from "@blocknote/react";
 import "@blocknote/core/style.css";
-import { CURRENT, DEFAULT_CURRENT, NOTES, Note } from "@/app/model";
+import { CURRENT_SESSION, DEFAULT_CURRENT, NOTES, Note } from "@/app/model";
 import { useLocalStorage } from "usehooks-ts";
 
 
 const Notes = () => {
     const [note, setNote] = useLocalStorage(NOTES, null as Note)
-    const [current, setCurrent] = useLocalStorage(CURRENT, DEFAULT_CURRENT);
+    const [current, setCurrent] = useLocalStorage(CURRENT_SESSION, DEFAULT_CURRENT);
 
     const onEditorContentChange = (editor: BlockNoteView) => {
         const block = editor.topLevelBlocks;

@@ -1,4 +1,4 @@
-import { CURRENT, CurrentState, DEFAULT_CURRENT, DEFAULT_STATE, DISPLAY_AT, FIELDS, Field, LIST_AND_LISTS, LIST_TITLE, NOTES, REPEAT_PERIOD, REPEAT_QTY, TIMESTAMP_SAVE, Note, SEARCH_EVENT } from "@/app/model";
+import { CURRENT_SESSION, CurrentState, DEFAULT_CURRENT, DEFAULT_STATE, DISPLAY_AT, FIELDS, Field, LIST_AND_LISTS, LIST_TITLE, NOTES, REPEAT_PERIOD, REPEAT_QTY, TIMESTAMP_SAVE, Note, SEARCH_EVENT } from "@/app/model";
 import { RepeatPeriod } from "@/types";
 import { log } from "@/utils/logUtils";
 import { SearchResults, search } from "@/utils/searchUtils";
@@ -6,8 +6,10 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useLocalStorage } from "usehooks-ts";
 
+let listening = false;
+
 const SearchField = () => {
-    const [current, setCurrent] = useLocalStorage(CURRENT, DEFAULT_CURRENT);
+    const [current, setCurrent] = useLocalStorage(CURRENT_SESSION, DEFAULT_CURRENT);
     const [state, _setState] = useLocalStorage(LIST_AND_LISTS, DEFAULT_STATE);
     const [_listTitle, setListTitle] = useLocalStorage(LIST_TITLE, '');
     const [_timestampSave, setTimestampSave] = useLocalStorage(TIMESTAMP_SAVE, false);
@@ -20,10 +22,14 @@ const SearchField = () => {
     const searchParams = useSearchParams();
     let title = searchParams.get('title');
 
-    // @ts-ignore
-    document.addEventListener(SEARCH_EVENT, (customEvent: CustomEvent) => {
-        setSearchText(customEvent.detail);
-    });
+    if (!listening) {
+        listening = true;
+        // @ts-ignore
+        document.addEventListener(SEARCH_EVENT, (customEvent: CustomEvent) => {
+            setSearchText(customEvent.detail);
+            customEvent.preventDefault();
+        });
+    }
 
     useEffect(() => {
         const field = document.getElementById('search-input') as HTMLInputElement;

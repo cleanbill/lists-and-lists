@@ -1,5 +1,5 @@
 "use client"
-import { Field, FieldComponentType, FieldType, ListSession, DEFAULT_STATE, DEFAULT_LIST, DEFAULT_CURRENT, LIST_AND_LISTS, CURRENT, FIELDS, LIST_TITLE, TIMESTAMP_SAVE, CurrentState, DEFAULT_SESSION } from '@/app/model';
+import { Field, FieldComponentType, FieldType, ListSession, DEFAULT_STATE, DEFAULT_LIST, DEFAULT_CURRENT, LIST_AND_LISTS, CURRENT_SESSION, FIELDS, LIST_TITLE, TIMESTAMP_SAVE, CurrentState, DEFAULT_SESSION } from '@/app/model';
 import { useLocalStorage } from 'usehooks-ts';
 import Select from 'react-select';
 import { useEffect, useState } from 'react';
@@ -8,7 +8,7 @@ import ListRow from './listRow';
 const List = () => {
 
     const [state, _setState] = useLocalStorage(LIST_AND_LISTS, DEFAULT_STATE);
-    const [current, setCurrent] = useLocalStorage(CURRENT, DEFAULT_CURRENT);
+    const [current, setCurrent] = useLocalStorage(CURRENT_SESSION, DEFAULT_CURRENT);
 
     const [fields, setFields] = useLocalStorage(FIELDS, DEFAULT_LIST.sessions[0].fields)
     const [listTitle, _setListTitle] = useLocalStorage(LIST_TITLE, "");

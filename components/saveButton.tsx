@@ -1,4 +1,4 @@
-import { CURRENT, DEFAULT_CURRENT, DEFAULT_STATE, LIST_AND_LISTS, UpdateState } from "@/app/model";
+import { CURRENT_SESSION, DEFAULT_CURRENT, DEFAULT_STATE, LIST_AND_LISTS, SAVE_SWITCH_EVENT, SEARCH_EVENT, UpdateState } from "@/app/model";
 import { TimedNote } from "@/types";
 import { obtainUI } from "@/utils/localUtils";
 import { log } from "@/utils/logUtils";
@@ -7,15 +7,27 @@ import { addTimedNote } from "@/utils/workerUtils";
 import { useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 
+let listening = false;
 const SAVE_BUTTON_ID = 'save-button';
 
 const SaveButton = () => {
 
     const [state, setState] = useLocalStorage(LIST_AND_LISTS, DEFAULT_STATE);
-    const [current, setCurrent] = useLocalStorage(CURRENT, DEFAULT_CURRENT);
+    const [current, setCurrent] = useLocalStorage(CURRENT_SESSION, DEFAULT_CURRENT);
 
     const [showSavingToast, setShowSavedToast] = useState(false);
     const [showDuplicateToast, setDuplicateToast] = useState(false);
+
+    if (!listening) {
+        listening = true;
+        // @ts-ignore
+        document.addEventListener(SAVE_SWITCH_EVENT, (customEvent: CustomEvent) => {
+            customEvent.preventDefault();
+            saveClicked(true);
+            const ce = new CustomEvent(SEARCH_EVENT, { detail: customEvent.detail });
+            document.dispatchEvent(ce);
+        });
+    }
 
     const getUpdateState = (allowOverwrite = false): UpdateState => {
         const ui = obtainUI();
@@ -27,7 +39,6 @@ const SaveButton = () => {
         };
         return updateState;
     }
-
 
     const saveClicked = (override = false) => {
         const saveBut = document.getElementById(SAVE_BUTTON_ID) as HTMLButtonElement;

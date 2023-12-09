@@ -1,4 +1,4 @@
-import { CURRENT, CurrentState, DISPLAY_AT, FIELDS, LIST_TITLE, ListData, NOTES, REPEAT_PERIOD, REPEAT_QTY, TIMESTAMP_SAVE, UIData } from "@/app/model";
+import { CURRENT_SESSION, CurrentState, DISPLAY_AT, FIELDS, LIST_TITLE, ListData, NOTES, REPEAT_PERIOD, REPEAT_QTY, TIMESTAMP_SAVE, UIData } from "@/app/model";
 import { log } from "./logUtils";
 import { SearchResults } from "./searchUtils";
 

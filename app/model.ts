@@ -38,7 +38,7 @@ const fieldTypesArray = (): Array<String> => {
 export { fieldTypesArray };
 
 export const LIST_AND_LISTS = 'listsAndLists';
-export const CURRENT = 'current';
+export const CURRENT_SESSION = 'current';
 export const FIELDS = 'fields';
 export const NOTES = 'notes';
 export const SEARCH_TEXT = 'searchText';
@@ -49,6 +49,7 @@ export const REPEAT_PERIOD = 'repeatPeriod';
 export const REPEAT_QTY = 'repeatQty';
 export const TIMED_NOTES = 'timedNotes';
 export const SEARCH_EVENT = 'searchEvent';
+export const SAVE_SWITCH_EVENT = 'saveSwitchEvent';
 
 export type Note = Object | null;
 

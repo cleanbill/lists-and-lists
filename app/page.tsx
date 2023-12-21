@@ -1,13 +1,11 @@
 "use client"
-import List from "@/components/list";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import { TimedNote } from "@/types";
+import { CURRENT_SESSION, DEFAULT_CURRENT, DEFAULT_STATE, LIST_AND_LISTS, ListData, REPEAT_PERIOD, REPEAT_QTY, RepeatPeriod, SAVE_SWITCH_EVENT, TIMED_NOTES, TimedNote } from "@/types";
 import TimePicker from "@/components/timePicker";
 import RepeatPicker from "@/components/repeatPicker";
 import { discard, setup } from "@/utils/workerUtils";
 import SaveButton from "@/components/saveButton";
-import { CURRENT_SESSION, DEFAULT_CURRENT, SAVE_SWITCH_EVENT, TIMED_NOTES } from "./model";
 import SearchField from "@/components/searchField";
 import TitleField from "@/components/titleField";
 import SidePanel from "@/components/sidePanel";
@@ -15,6 +13,7 @@ import SidePanelButton from "@/components/sidePanelButton";
 import { log } from "@/utils/logUtils";
 import TimeStampSaveTick from "@/components/timestampSaveTick";
 import Notes from "@/components/notes";
+import SessionPicker from "@/components/sessionPicker";
 
 let workerStopped = true;
 
@@ -25,6 +24,11 @@ export default function Home() {
   const [timedNotes, setTimedNotes] = useLocalStorage(TIMED_NOTES, [] as Array<TimedNote>);
   const [showTimers, setShowTimers] = useState(timedNotes.length > 0);
   const [blockedSwitchTitle, setBlockedSwitchTitle] = useState("");
+
+  const [_repeatQty, setRepeatQty] = useLocalStorage(REPEAT_QTY, 0);
+  const [_displayAt, setDisplayAt] = useLocalStorage('displayAt', "");
+  const [_repeatPeriod, setRepeatPeriod] = useLocalStorage(REPEAT_PERIOD, RepeatPeriod.None);
+  const [state, setState] = useLocalStorage(LIST_AND_LISTS, DEFAULT_STATE);
 
   const switchToSearchText = (t: string) => {
     if (current.unsaved) {
@@ -41,13 +45,58 @@ export default function Home() {
     setBlockedSwitchTitle("");
   }
 
+  const find = (id: string, list: Array<TimedNote>): TimedNote | false => {
+    const index = list.findIndex((tn: TimedNote) => tn.id == id);
+    if (index == -1) {
+      return false;
+    }
+    return list[index];
+  }
+
+  const syncStateData = (data:ListData,timedNote:TimedNote) =>{
+    data.repeatPeriod = timedNote.repeatPeriod;
+    data.repeatQty = timedNote.repeatQty;
+    data.displayAt = timedNote.time;
+    return data
+  }
+
+  const syncLocalStorage = (timedNote:TimedNote) => {
+    setRepeatPeriod(timedNote.repeatPeriod);
+    setRepeatQty(timedNote.repeatQty);
+    setDisplayAt(timedNote.time);
+  }
+
+  const syncStateWithTimedNotesUpdates = (list: Array<TimedNote>) => {
+    let updated = false;
+    const newList = state.lists.map((data: ListData, index: number) => {
+      const timedNote = data?.listTitle ? find(data.listTitle, list): false;
+      if (!timedNote){
+        return data;
+      }
+      updated = true;
+      if (current.listIndex == index) {
+        syncLocalStorage(timedNote);
+      }
+      const updatedData  = syncStateData(data,timedNote);
+      return updatedData;
+    });
+    if (updated){
+      setState({ lists: [...newList] });
+    }
+  }
+
+  const updateTimedNotes = (list: Array<TimedNote>) => {
+    setTimedNotes(list);
+    syncStateWithTimedNotesUpdates(list);
+  }
+
   if (workerStopped) {
     workerStopped = false;
     log('worker setup');
     try {
       workerRef.current = new Worker(new URL('../worker.js', import.meta.url));
       const onMessageFn = setup(workerRef.current);
-      workerRef.current.onmessage = onMessageFn(switchToSearchText, setTimedNotes);
+      workerRef.current.onmessage = onMessageFn(switchToSearchText, updateTimedNotes);
       workerRef.current?.postMessage({ command: 'Load', 'timedNote': timedNotes });
       return () => {
         workerRef.current?.terminate()
@@ -55,6 +104,8 @@ export default function Home() {
     } catch (er) {
       console.error('worker failed ', er);
     }
+  } else if (blockedSwitchTitle.length > 0) {
+    setBlockedSwitchTitle("");
   }
 
   const toggleSidePanel = () => {
@@ -78,13 +129,14 @@ export default function Home() {
             <TimePicker></TimePicker>
             <RepeatPicker></RepeatPicker>
           </div>
+          <SessionPicker></SessionPicker>
           {/* <List></List> */}
-          <Notes key={current?.listIndex || "unset"}></Notes>
+          <Notes key={current?.listIndex + current?.sessionIndex || "unset"}></Notes>
           <TimeStampSaveTick></TimeStampSaveTick>
           {!showTimers && <SidePanelButton toggleSidePanel={toggleSidePanel}></SidePanelButton>}
         </section>
         <SaveButton></SaveButton>
-        {blockedSwitchTitle && <button onClick={saveAndSwitch} className=" mr-1 ml-10 mt-2 mb-3 bg-red-200 rounded-xl text-black p-3 ">Unsaved - Cannot switch to {blockedSwitchTitle}</button>}
+        {blockedSwitchTitle && <button title="Click to save and switch" onClick={saveAndSwitch} className=" mr-1 ml-10 mt-2 mb-3 bg-red-200 rounded-xl text-black p-3 ">Unsaved - Cannot switch to {blockedSwitchTitle}</button>}
         {/* {current.unsaved && <label className=" mr-1 ml-10 mt-2 mb-3 bg-red-200 rounded-xl text-black p-3 ">Unsaved</label>} */}
       </article>
     </main>

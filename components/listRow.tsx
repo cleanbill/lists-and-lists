@@ -1,4 +1,4 @@
-import { FieldType } from "@/app/model";
+import { FieldType } from "@/types";
 
 type Props = {
     id: string,

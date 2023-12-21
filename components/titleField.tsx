@@ -1,4 +1,4 @@
-import { CURRENT_SESSION, DEFAULT_CURRENT, DEFAULT_STATE, LIST_AND_LISTS, LIST_TITLE } from "@/app/model";
+import { CURRENT_SESSION, DEFAULT_CURRENT, DEFAULT_STATE, LIST_AND_LISTS, LIST_TITLE } from "@/types";
 import { search } from "@/utils/searchUtils";
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";

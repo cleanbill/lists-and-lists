@@ -1,5 +1,4 @@
-import { CURRENT_SESSION, DEFAULT_CURRENT, DEFAULT_STATE, LIST_AND_LISTS, SAVE_SWITCH_EVENT, SEARCH_EVENT, UpdateState } from "@/app/model";
-import { TimedNote } from "@/types";
+import { LIST_AND_LISTS, SAVE_SWITCH_EVENT, DEFAULT_STATE, CURRENT_SESSION, DEFAULT_CURRENT, SEARCH_EVENT, UpdateState, TimedNote } from "@/types";
 import { obtainUI } from "@/utils/localUtils";
 import { log } from "@/utils/logUtils";
 import { applyUpdate } from "@/utils/saveUtils";

@@ -1,22 +1,27 @@
-import { RepeatPeriod } from "@/types";
+import { CURRENT_SESSION, DEFAULT_CURRENT, REPEAT_PERIOD, REPEAT_QTY, RepeatPeriod } from "@/types";
 import { useLocalStorage } from "usehooks-ts";
 
 
 const RepeatPicker = () => {
 
-    const [repeatPeriod, setRepeatPeriod] = useLocalStorage('repeatPeriod',RepeatPeriod.None);
-    const [repeatQty, setRepeatQty] = useLocalStorage('repeatQty',0);
+    const [repeatPeriod, setRepeatPeriod] = useLocalStorage(REPEAT_PERIOD,RepeatPeriod.None);
+    const [repeatQty, setRepeatQty] = useLocalStorage(REPEAT_QTY,0);
+    const [current, setCurrent] = useLocalStorage(CURRENT_SESSION, DEFAULT_CURRENT);
 
     const onSelect = (ev: any) => {
         if (!ev.target['validity'].valid) return;
         const value = ev.target['value'];
         setRepeatPeriod(value);
+        current.unsaved = true;
+        setCurrent(current);
     };
 
     const onChange = (ev: any) => {
         if (!ev.target['validity'].valid) return;
         const value = ev.target['value'];
         setRepeatQty(value);
+        current.unsaved = true;
+        setCurrent(current);
     };
 
     return (

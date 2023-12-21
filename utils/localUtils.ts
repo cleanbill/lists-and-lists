@@ -1,6 +1,5 @@
-import { CURRENT_SESSION, CurrentState, DISPLAY_AT, FIELDS, LIST_TITLE, ListData, NOTES, REPEAT_PERIOD, REPEAT_QTY, TIMESTAMP_SAVE, UIData } from "@/app/model";
+import { LocalData, UIData, LIST_TITLE, TIMESTAMP_SAVE, FIELDS, DISPLAY_AT, REPEAT_PERIOD, REPEAT_QTY, NOTES, LIST_AND_LISTS, CURRENT_SESSION, StoredState, CurrentState } from "@/types";
 import { log } from "./logUtils";
-import { SearchResults } from "./searchUtils";
 
 const getItem = (key: string): string => {
     const jsonString = localStorage.getItem(key);
@@ -15,12 +14,30 @@ const getItem = (key: string): string => {
     }
 }
 
+const getObject = (key: string): object => {
+    const jsonString = localStorage.getItem(key);
+    if (!jsonString) {
+        return {};
+    }
+    try {
+        return JSON.parse(jsonString);
+    } catch (er) {
+        log('can\'t parse "' + jsonString + '"', er);
+        return {};
+    }
+}
+
 const getBooleanItem = (key: string): boolean =>{
-    const item = getItem(key);
-    if (item.length == 0){
+    const jsonString = localStorage.getItem(key);
+    if (!jsonString) {
         return false;
     }
-    return item == 'true';
+    try {
+        return JSON.parse(jsonString);
+    } catch (er) {
+        log('can\'t parse "' + jsonString + '"', er);
+        return false;
+    }
 }
 
 const getNumberItem = (key: string): number =>{
@@ -63,6 +80,15 @@ const getArrayItem = (key: string): [] =>{
 //     };
 //     localStorage.setItem(CURRENT,JSON.stringify(newPlace));
 // }
+
+export const obtainState = (): LocalData =>{
+    const localData:LocalData = {
+        UIData: obtainUI(),
+        storedData: getObject(LIST_AND_LISTS) as StoredState,
+        current: getObject(CURRENT_SESSION) as CurrentState
+    };
+    return localData;
+}
 
 export const obtainUI = (): UIData => {
     const listTitle = getItem(LIST_TITLE);

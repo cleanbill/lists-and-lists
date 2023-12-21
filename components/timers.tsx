@@ -1,5 +1,4 @@
-import { SEARCH_EVENT } from "@/app/model";
-import { TimedNote } from "@/types";
+import { SEARCH_EVENT, TimedNote } from "@/types";
 import { timeStringDisplay } from "@/utils/logUtils";
 import { useLocalStorage } from "usehooks-ts";
 
@@ -37,16 +36,16 @@ const Timers = (props: Props) => {
     return (
         <>
             {noteDates.map((noteDate:string)=>(
-                <>
+                <div key={"noteDate-"+noteDate} >
                 <h2 className="text-sm">{noteDate}</h2>
                 {notes[noteDate].map((f:TimedNote, index: number) => (
-                    <span key={"timer-"+index + f.id} className="grid grid-cols-[9fr,2fr,0fr] gap-1 text-yellow-700">
+                    <div key={"timer-"+index + f.id} className="grid grid-cols-[9fr,2fr,0fr] gap-1 text-yellow-700">
                         <button key={"title-"+index + f.id} onClick={(ev) => setSearchText(f.id)}>{f.id}</button>
                         <label key={'time-' + index + f.id} title={f.time}>{timeStringDisplay("" + f.time)}</label>
                         <button key={'del-time-' + index + f.id} onClick={() => props.discard(f.id)} className="text-red-500">x</button>
-                    </span>
+                    </div>
                 ))}
-                </>
+                </div>
             ))}
         </>
     )

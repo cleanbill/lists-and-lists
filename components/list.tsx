@@ -1,9 +1,9 @@
 "use client"
-import { Field, FieldComponentType, FieldType, ListSession, DEFAULT_STATE, DEFAULT_LIST, DEFAULT_CURRENT, LIST_AND_LISTS, CURRENT_SESSION, FIELDS, LIST_TITLE, TIMESTAMP_SAVE, CurrentState, DEFAULT_SESSION } from '@/app/model';
 import { useLocalStorage } from 'usehooks-ts';
 import Select from 'react-select';
 import { useEffect, useState } from 'react';
 import ListRow from './listRow';
+import { LIST_AND_LISTS, DEFAULT_STATE, CURRENT_SESSION, DEFAULT_CURRENT, FIELDS, DEFAULT_LIST, LIST_TITLE, FieldComponentType, Field, ListSession, FieldType } from '@/types';
 
 const List = () => {
 

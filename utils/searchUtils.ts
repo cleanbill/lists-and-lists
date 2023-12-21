@@ -1,4 +1,4 @@
-import { Matcher, ListData } from "../app/model";
+import { Matcher, ListData } from "@/types";
 
 export const matchSetup = (needle: string): Matcher => {
   if (!needle) {
@@ -26,7 +26,7 @@ export const search = (
   let listIndex: number = 0;
   while (found == null && listIndex < lists.length) {
     const list: ListData = lists[listIndex];
-    if (match(list.listTitle)) {
+    if (list && match(list.listTitle)) {
       found = { listIndex, sessionIndex: (list.sessions.length-1) };
     } else {
       listIndex = listIndex + 1;

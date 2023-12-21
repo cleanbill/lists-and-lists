@@ -1,5 +1,4 @@
-import { CURRENT_SESSION, CurrentState, DEFAULT_CURRENT, DEFAULT_STATE, DISPLAY_AT, FIELDS, Field, LIST_AND_LISTS, LIST_TITLE, NOTES, REPEAT_PERIOD, REPEAT_QTY, TIMESTAMP_SAVE, Note, SEARCH_EVENT } from "@/app/model";
-import { RepeatPeriod } from "@/types";
+import { CURRENT_SESSION, SEARCH_EVENT, CurrentState, DEFAULT_CURRENT, DEFAULT_STATE, DISPLAY_AT, FIELDS, Field, LIST_AND_LISTS, LIST_TITLE, NOTES, Note, REPEAT_PERIOD, REPEAT_QTY, RepeatPeriod, TIMESTAMP_SAVE } from "@/types";
 import { log } from "@/utils/logUtils";
 import { SearchResults, search } from "@/utils/searchUtils";
 import { useSearchParams } from "next/navigation";
@@ -33,17 +32,17 @@ const SearchField = () => {
 
     useEffect(() => {
         const field = document.getElementById('search-input') as HTMLInputElement;
-        if (current.searchText != field.value) {
+        if (current?.searchText != field.value) {
             log('searching for', field.value);
-            setSearchText(current.searchText);
+            setSearchText(field.value);
         } else {
-            log('search text the same', current.searchText);
+            log('search text the same', current?.searchText);
         }
         if (title) {
             setSearchText(title);
             title = null;
         }
-    }, [current.searchText])
+    }, [current?.searchText])
 
     const setSearchText = (text: string) => {
         if (!text) {
@@ -55,7 +54,6 @@ const SearchField = () => {
             setCurrentState(found, text);
             return;
         }
-        console.log('not found ', text);
     }
 
     const setCurrentState = (found: SearchResults, searchText: string) => {
@@ -96,10 +94,8 @@ const SearchField = () => {
                 d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
                 clipRule="evenodd" />
         </svg>
-        <input id='search-input' onBlur={gone} defaultValue={current.searchText} autoFocus onChange={(e) => setSearchText(e.target.value)} className='ml-7 h-10 ps-2 pe-2 mt-1 rounded-lg' placeholder="Search"></input></search>
+        <input id='search-input' onBlur={gone} defaultValue={current?.searchText} autoFocus onChange={(e) => setSearchText(e.target.value)} className='ml-7 h-10 ps-2 pe-2 mt-1 rounded-lg' placeholder="Search"></input></search>
     )
 }
 
 export default SearchField;
-
-

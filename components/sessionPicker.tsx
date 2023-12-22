@@ -1,5 +1,5 @@
 import { CURRENT_SESSION, DEFAULT_CURRENT, DEFAULT_STATE, LIST_AND_LISTS, ListSession, NOTES, Note } from '@/types';
-import Select, { ActionMeta, SingleValue, PropsValue } from 'react-select';
+import Select, { ActionMeta, SingleValue } from 'react-select';
 import { useLocalStorage } from "usehooks-ts";
 
 
@@ -17,7 +17,6 @@ const SessionPicker = () => {
     const handleChange = (sessions: Array<ListSession>, option: string) => {
         current.sessionIndex = parseInt(option);
         setCurrent(current);
-        // Should this be here???
         const currentSession = sessions[current.sessionIndex];
         setNote(currentSession.note);
     };
@@ -40,16 +39,14 @@ const SessionPicker = () => {
         }) as Array<{ value: string, label: string }>
     }
 
-    const options = extractOptions(state.lists[current.listIndex].sessions);
+    const options = extractOptions(state.lists[current.listIndex]?.sessions);
+    const defaultValue = options[current.sessionIndex];
 
     const hasSessions = typeof state == undefined? false : state?.lists[current.listIndex]?.sessions?.length > 1;
 
     const onChange = (newValue: SingleValue<SelectOption>, actionMeta: ActionMeta<SelectOption>) =>{
-        // Needs testing
         handleChange(state.lists[current.listIndex].sessions, newValue?.value ?  newValue?.value: "0");
     }
-
-    const defaultValue = current.listIndex; //:PropsValue<SelectOption> = current.sessionIndex as PropsValue;
 
     return (
         <>
@@ -60,8 +57,7 @@ const SessionPicker = () => {
                     className="text-black h-10 rounded-xl p-1 mt-3 mr-2"
                     isSearchable={true}
                     openMenuOnClick={true}
-                    // ts-ignore
-                    defaultValue={options[current.listIndex]}
+                    defaultValue={defaultValue}
                     onChange={onChange}
                     options={options}
                 />

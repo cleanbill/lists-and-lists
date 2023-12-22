@@ -5,7 +5,7 @@ const z = (n: number) => n < 10 ? "0" + n : n + "";
 export const makeMark = (includeMinutes = true) => {
     const now = new Date();
     const minutes = includeMinutes ? z(now.getMinutes()) : "00";
-    const seconds = includeMinutes ? z(now.getSeconds()) : "00";
+    const seconds = "00"; // includeMinutes ? z(now.getSeconds()) : "00";
     const mark = now.getFullYear() + "-" + z(now.getMonth() + 1) + "-" + z(now.getDate()) + ":" + z(now.getHours()) + ':' + minutes+":"+seconds;
     return mark;
 }
@@ -36,7 +36,6 @@ const updateWithChangedTitle = (updateState: UpdateState) => {
     }
 
     if (found) {
-        console.log('switched title to ', updateState.ui.listTitle);
         updateState.stored.lists[found.listIndex] = createListData(updateState.ui,
             updateState.stored.lists[found.listIndex],
             found.sessionIndex);
@@ -74,10 +73,10 @@ const updateSession = (updateState: UpdateState): StoredState => {
 
 const doUpdate = (updateState: UpdateState): StoredState => {
     const storedList = updateState.stored.lists[updateState.current.listIndex];
-    if (storedList.listTitle != updateState.ui.listTitle) {
-        return updateWithChangedTitle(updateState);
-    } else {
+    if (storedList.listTitle == updateState.ui.listTitle) {
         return updateSession(updateState);
+    } else {
+        return updateWithChangedTitle(updateState);
     }
 }
 

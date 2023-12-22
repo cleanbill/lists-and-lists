@@ -2,16 +2,14 @@ import { LocalData, UIData, LIST_TITLE, TIMESTAMP_SAVE, FIELDS, DISPLAY_AT, REPE
 import { log } from "./logUtils";
 
 const getItem = (key: string): string => {
-    const jsonString = localStorage.getItem(key);
-    if (!jsonString) {
+    const text = localStorage.getItem(key); // get rid of ""
+    if (!text) {
         return "";
     }
-    try {
-        return JSON.parse(jsonString);
-    } catch (er) {
-        log('can\'t parse "' + jsonString + '"', er);
-        return "";
+    if (text.startsWith('"') && text.endsWith('"')){
+        return text.substring(1,text.length-1);
     }
+    return text;
 }
 
 const getObject = (key: string): object => {
@@ -27,7 +25,7 @@ const getObject = (key: string): object => {
     }
 }
 
-const getBooleanItem = (key: string): boolean =>{
+const getBooleanItem = (key: string): boolean => {
     const jsonString = localStorage.getItem(key);
     if (!jsonString) {
         return false;
@@ -40,16 +38,16 @@ const getBooleanItem = (key: string): boolean =>{
     }
 }
 
-const getNumberItem = (key: string): number =>{
+const getNumberItem = (key: string): number => {
     const item = getItem(key);
-    if (item.length == 0){
+    if (item.length == 0) {
         return -1;
     }
     return parseInt(item);
 }
 
 
-const getArrayItem = (key: string): [] =>{
+const getArrayItem = (key: string): [] => {
     const jsonString = localStorage.getItem(key);
     if (!jsonString) {
         return [];
@@ -81,8 +79,8 @@ const getArrayItem = (key: string): [] =>{
 //     localStorage.setItem(CURRENT,JSON.stringify(newPlace));
 // }
 
-export const obtainState = (): LocalData =>{
-    const localData:LocalData = {
+export const obtainState = (): LocalData => {
+    const localData: LocalData = {
         UIData: obtainUI(),
         storedData: getObject(LIST_AND_LISTS) as StoredState,
         current: getObject(CURRENT_SESSION) as CurrentState
@@ -90,11 +88,11 @@ export const obtainState = (): LocalData =>{
     return localData;
 }
 
-export const syncLocalStorage = (timedNote:TimedNote) => {
-    localStorage.setItem(REPEAT_PERIOD,timedNote.repeatPeriod);
-    localStorage.setItem(REPEAT_QTY,""+timedNote.repeatQty);
-    localStorage.setItem(DISPLAY_AT,timedNote.time);
-  }
+export const syncLocalStorage = (timedNote: TimedNote) => {
+    localStorage.setItem(REPEAT_PERIOD, "\""+timedNote.repeatPeriod+"\"");
+    localStorage.setItem(REPEAT_QTY, "\"" + timedNote.repeatQty+ "\"");
+    localStorage.setItem(DISPLAY_AT, "\""+timedNote.time+"\"");
+}
 
 export const obtainUI = (): UIData => {
     const listTitle = getItem(LIST_TITLE);
@@ -103,13 +101,13 @@ export const obtainUI = (): UIData => {
     const displayAt = getItem(DISPLAY_AT);
     const repeatPeriod = getItem(REPEAT_PERIOD);
     const repeatQty = getNumberItem(REPEAT_QTY);
-    const note = getItem(NOTES);
+    const note = getObject(NOTES);
 
     return {
         'listTitle': listTitle,
         'timestampSave': timestampSave,
         'fields': fields,
-        'note':note,
+        'note': note,
         'displayAt': displayAt,
         'repeatPeriod': repeatPeriod,
         'repeatQty': repeatQty

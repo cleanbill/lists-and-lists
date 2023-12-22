@@ -1,7 +1,7 @@
 "use client"
 import { useRef, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import { CURRENT_SESSION, DEFAULT_CURRENT, DEFAULT_STATE, LIST_AND_LISTS, ListData, REPEAT_PERIOD, REPEAT_QTY, RepeatPeriod, SAVE_SWITCH_EVENT, SYNC_TIMED_NOTES, TIMED_NOTES, TimedNote } from "@/types";
+import { CURRENT_SESSION, DEFAULT_CURRENT, DEFAULT_STATE, LIST_AND_LISTS, ListData, REPEAT_PERIOD, REPEAT_QTY, RepeatPeriod, SAVE_SWITCH_EVENT, SEARCH_EVENT, SYNC_TIMED_NOTES, TIMED_NOTES, TimedNote } from "@/types";
 import TimePicker from "@/components/timePicker";
 import RepeatPicker from "@/components/repeatPicker";
 import { discard, setup } from "@/utils/workerUtils";
@@ -37,6 +37,8 @@ export default function Home() {
     }
     current.searchText = t;
     setCurrent(current);
+    const ce = new CustomEvent(SEARCH_EVENT, { detail: t });
+    document.dispatchEvent(ce);
   }
 
   const saveAndSwitch = () => {
@@ -51,9 +53,34 @@ export default function Home() {
     setBlockedSwitchTitle("");
   }
 
+  const isUpdated = (list: Array<TimedNote>) => {
+    if (list.length != timedNotes.length) {
+      return true;
+    }
+    return timedNotes.find((stored: TimedNote) => {
+      const found = list.find((note: TimedNote) => (note.id == stored.id));
+      if (!found) {
+        return false;
+      }
+      if (stored.repeatPeriod != found.repeatPeriod) {
+        return true;
+      }
+      if (stored.repeatQty != found.repeatQty) {
+        return true;
+      }
+      if (stored.time != found.time) {
+        return true;
+      }
+      return false;
+    })
+  }
+
   const updateTimedNotes = (list: Array<TimedNote>) => {
-    setTimedNotes(list);
-    syncStateWithTimedNotesUpdates(list);
+    if (isUpdated(list)) {
+      const newList = [...list];
+      setTimedNotes(newList);
+      syncStateWithTimedNotesUpdates(list);
+    }
   }
 
   if (workerStopped) {

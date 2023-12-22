@@ -27,7 +27,7 @@ const SaveButton = () => {
             const ce = new CustomEvent(SEARCH_EVENT, { detail: customEvent.detail });
             document.dispatchEvent(ce);
         });
-        
+
         // @ts-ignore
         document.addEventListener(SYNC_TIMED_NOTES, (customEvent: CustomEvent) => {
             customEvent.preventDefault();
@@ -35,7 +35,7 @@ const SaveButton = () => {
             if (update){
                 setState(update);
             }
-            saveClicked(true);
+            saveClicked(true, true);
         });
     }
 
@@ -50,7 +50,7 @@ const SaveButton = () => {
         return updateState;
     }
 
-    const saveClicked = (override = false) => {
+    const saveClicked = (override = false, ignoreTimedNote = false) => {
         const saveBut = document.getElementById(SAVE_BUTTON_ID) as HTMLButtonElement;
         saveBut.disabled = true;
         const updateState = getUpdateState(override);
@@ -68,7 +68,7 @@ const SaveButton = () => {
         setShowSavedToast(true);
         setTimeout(() => setShowSavedToast(false), 5000);
 
-        if (updateState.ui.displayAt && updateState.ui.displayAt.length > 19) {
+        if (!ignoreTimedNote && updateState.ui.displayAt && updateState.ui.displayAt.length > 19) {
             const timedNote: TimedNote = {
                 time: updateState.ui.displayAt,
                 id: updateState.ui.listTitle,
@@ -79,6 +79,7 @@ const SaveButton = () => {
         }
         saveBut.disabled = false;
         current.unsaved = false;
+        current.sessionIndex = state.lists[current.listIndex]? state.lists[current.listIndex].sessions.length-1: 0;
         setCurrent(current);
     }
 

@@ -1,7 +1,8 @@
-import { LIST_AND_LISTS, SAVE_SWITCH_EVENT, DEFAULT_STATE, CURRENT_SESSION, DEFAULT_CURRENT, SEARCH_EVENT, UpdateState, TimedNote } from "@/types";
+import { LIST_AND_LISTS, SAVE_SWITCH_EVENT, DEFAULT_STATE, CURRENT_SESSION, DEFAULT_CURRENT, SEARCH_EVENT, UpdateState, TimedNote, SYNC_TIMED_NOTES } from "@/types";
 import { obtainUI } from "@/utils/localUtils";
 import { log } from "@/utils/logUtils";
 import { applyUpdate } from "@/utils/saveUtils";
+import { syncState } from "@/utils/syncUtils";
 import { addTimedNote } from "@/utils/workerUtils";
 import { useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
@@ -25,6 +26,16 @@ const SaveButton = () => {
             saveClicked(true);
             const ce = new CustomEvent(SEARCH_EVENT, { detail: customEvent.detail });
             document.dispatchEvent(ce);
+        });
+        
+        // @ts-ignore
+        document.addEventListener(SYNC_TIMED_NOTES, (customEvent: CustomEvent) => {
+            customEvent.preventDefault();
+            const update = syncState(current.listIndex,state,customEvent.detail);
+            if (update){
+                setState(update);
+            }
+            saveClicked(true);
         });
     }
 

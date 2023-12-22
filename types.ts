@@ -49,6 +49,7 @@ export const REPEAT_QTY = 'repeatQty';
 export const TIMED_NOTES = 'timedNotes';
 export const SEARCH_EVENT = 'searchEvent';
 export const SAVE_SWITCH_EVENT = 'saveSwitchEvent';
+export const SYNC_TIMED_NOTES = 'syncTimedNotes';
 export const SESSION_INDEX = -1;
 
 export enum RepeatPeriod {

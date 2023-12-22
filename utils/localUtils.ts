@@ -1,4 +1,4 @@
-import { LocalData, UIData, LIST_TITLE, TIMESTAMP_SAVE, FIELDS, DISPLAY_AT, REPEAT_PERIOD, REPEAT_QTY, NOTES, LIST_AND_LISTS, CURRENT_SESSION, StoredState, CurrentState } from "@/types";
+import { LocalData, UIData, LIST_TITLE, TIMESTAMP_SAVE, FIELDS, DISPLAY_AT, REPEAT_PERIOD, REPEAT_QTY, NOTES, LIST_AND_LISTS, CURRENT_SESSION, StoredState, CurrentState, TimedNote } from "@/types";
 import { log } from "./logUtils";
 
 const getItem = (key: string): string => {
@@ -89,6 +89,12 @@ export const obtainState = (): LocalData =>{
     };
     return localData;
 }
+
+export const syncLocalStorage = (timedNote:TimedNote) => {
+    localStorage.setItem(REPEAT_PERIOD,timedNote.repeatPeriod);
+    localStorage.setItem(REPEAT_QTY,""+timedNote.repeatQty);
+    localStorage.setItem(DISPLAY_AT,timedNote.time);
+  }
 
 export const obtainUI = (): UIData => {
     const listTitle = getItem(LIST_TITLE);

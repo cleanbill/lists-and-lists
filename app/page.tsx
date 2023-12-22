@@ -1,7 +1,7 @@
 "use client"
 import { useRef, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import { CURRENT_SESSION, DEFAULT_CURRENT, DEFAULT_STATE, LIST_AND_LISTS, ListData, REPEAT_PERIOD, REPEAT_QTY, RepeatPeriod, SAVE_SWITCH_EVENT, TIMED_NOTES, TimedNote } from "@/types";
+import { CURRENT_SESSION, DEFAULT_CURRENT, DEFAULT_STATE, LIST_AND_LISTS, ListData, REPEAT_PERIOD, REPEAT_QTY, RepeatPeriod, SAVE_SWITCH_EVENT, SYNC_TIMED_NOTES, TIMED_NOTES, TimedNote } from "@/types";
 import TimePicker from "@/components/timePicker";
 import RepeatPicker from "@/components/repeatPicker";
 import { discard, setup } from "@/utils/workerUtils";
@@ -45,44 +45,10 @@ export default function Home() {
     setBlockedSwitchTitle("");
   }
 
-  const find = (id: string, list: Array<TimedNote>): TimedNote | false => {
-    const index = list.findIndex((tn: TimedNote) => tn.id == id);
-    if (index == -1) {
-      return false;
-    }
-    return list[index];
-  }
-
-  const syncStateData = (data:ListData,timedNote:TimedNote) =>{
-    data.repeatPeriod = timedNote.repeatPeriod;
-    data.repeatQty = timedNote.repeatQty;
-    data.displayAt = timedNote.time;
-    return data
-  }
-
-  const syncLocalStorage = (timedNote:TimedNote) => {
-    setRepeatPeriod(timedNote.repeatPeriod);
-    setRepeatQty(timedNote.repeatQty);
-    setDisplayAt(timedNote.time);
-  }
-
   const syncStateWithTimedNotesUpdates = (list: Array<TimedNote>) => {
-    let updated = false;
-    const newList = state.lists.map((data: ListData, index: number) => {
-      const timedNote = data?.listTitle ? find(data.listTitle, list): false;
-      if (!timedNote){
-        return data;
-      }
-      updated = true;
-      if (current.listIndex == index) {
-        syncLocalStorage(timedNote);
-      }
-      const updatedData  = syncStateData(data,timedNote);
-      return updatedData;
-    });
-    if (updated){
-      setState({ lists: [...newList] });
-    }
+    const saveSwitchEvent = new CustomEvent(SYNC_TIMED_NOTES, { detail: list });
+    document.dispatchEvent(saveSwitchEvent);
+    setBlockedSwitchTitle("");
   }
 
   const updateTimedNotes = (list: Array<TimedNote>) => {

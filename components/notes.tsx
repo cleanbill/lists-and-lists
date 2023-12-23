@@ -7,7 +7,7 @@ import { CURRENT_SESSION, DEFAULT_CURRENT, NOTES, Note } from "@/types";
 
 
 const Notes = () => {
-    const [note, setNote] = useLocalStorage(NOTES, null as Note)
+    const [note, setNote] = useLocalStorage(NOTES, null as Note);
     const [current, setCurrent] = useLocalStorage(CURRENT_SESSION, DEFAULT_CURRENT);
 
     const onEditorContentChange = (editor: BlockNoteEditor) => {

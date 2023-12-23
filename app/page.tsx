@@ -14,6 +14,7 @@ import { log } from "@/utils/logUtils";
 import TimeStampSaveTick from "@/components/timestampSaveTick";
 import Notes from "@/components/notes";
 import SessionPicker from "@/components/sessionPicker";
+import Foot from "@/components/foot";
 
 let workerStopped = true;
 
@@ -24,11 +25,6 @@ export default function Home() {
   const [timedNotes, setTimedNotes] = useLocalStorage(TIMED_NOTES, [] as Array<TimedNote>);
   const [showTimers, setShowTimers] = useState(timedNotes.length > 0);
   const [blockedSwitchTitle, setBlockedSwitchTitle] = useState("");
-
-  const [_repeatQty, setRepeatQty] = useLocalStorage(REPEAT_QTY, 0);
-  const [_displayAt, setDisplayAt] = useLocalStorage('displayAt', "");
-  const [_repeatPeriod, setRepeatPeriod] = useLocalStorage(REPEAT_PERIOD, RepeatPeriod.None);
-  const [state, setState] = useLocalStorage(LIST_AND_LISTS, DEFAULT_STATE);
 
   const switchToSearchText = (t: string) => {
     if (current.unsaved) {
@@ -111,7 +107,7 @@ export default function Home() {
   }
 
   return (
-    <main className={showTimers ? "m-0 background-[#b0c4de] grid grid-cols-[2fr,11fr]" : "m-0 background-[#b0c4de]"}>
+    <>    <main className={showTimers ? "m-0 background-[#b0c4de] grid grid-cols-[2fr,11fr]" : "m-0 background-[#b0c4de]"}>
       {showTimers &&
         <SidePanel discard={discard} toggleSidePanel={toggleSidePanel}></SidePanel>}
       <article className={showTimers ? "mt-1 text-black" : "mt-1 text-black"}>
@@ -133,5 +129,7 @@ export default function Home() {
         {/* {current.unsaved && <label className=" mr-1 ml-10 mt-2 mb-3 bg-red-200 rounded-xl text-black p-3 ">Unsaved</label>} */}
       </article>
     </main>
+      <Foot></Foot>
+    </>
   )
 }

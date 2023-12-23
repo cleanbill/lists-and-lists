@@ -12,11 +12,11 @@ const Foot = () => {
 
             <div className=" grid grid-cols-2 w-100 gap-10 h-full">
 
-                <button onClick={() => importData()} className="butt sg:mb-4 justify-self-start ml-3">Import</button>
+                <button onClick={() => importData()} title="Import to local storage" className="butt sg:mb-4 justify-self-start ml-3 hover:underline hover:bg-yellow-100 active:bg-yellow-100 focus:ring focus:ring-yellow-300">Import</button>
                 <input type="file" hidden
                     id="importData" name="importData"
                     accept="application/json" onChange={() => importData()} />
-                <button onClick={() => exportData(state)} className="butt sg:mb-4 justify-self-end">Export</button>
+                <button onClick={() => exportData(state)} title="Export from local storage" className="butt sg:mb-4 justify-self-end hover:underline hover:bg-yellow-100 active:bg-yellow-100 focus:ring focus:ring-yellow-300">Export</button>
             </div>
 
             <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2024 <a href="https://github.com/cleanbill/lists-and-lists" className="hover:underline">Lists and lists™</a>. All Rights Reserved.

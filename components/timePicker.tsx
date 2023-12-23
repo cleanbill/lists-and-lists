@@ -21,6 +21,8 @@ const TimePicker = () => {
 
     const min = new Date().toISOString().substring(0, 19) + 'Z';
 
+    const value = (displayAt || '').toString().substring(0, 16);
+
     return (
         <>
             <input
@@ -28,7 +30,7 @@ const TimePicker = () => {
                 min={min}
                 id={'pick-time-' + title}
                 type="datetime-local"
-                value={(displayAt || '').toString().substring(0, 16)}
+                value={value}
                 onChange={onChange}
                 name="pick-time"
             />

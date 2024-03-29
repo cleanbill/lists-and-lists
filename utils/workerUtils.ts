@@ -1,5 +1,5 @@
 import { TimedNoteEvent, TimedNoteCommand, TimedNote, TimedNoteAction, RepeatPeriod } from "@/types";
-import { log } from "./dateUtils";
+import { log } from "./logUtils";
 
 let worker: any = null;
 

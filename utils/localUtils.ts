@@ -6,8 +6,8 @@ const getItem = (key: string): string => {
     if (!text) {
         return "";
     }
-    if (text.startsWith('"') && text.endsWith('"')){
-        return text.substring(1,text.length-1);
+    if (text.startsWith('"') && text.endsWith('"')) {
+        return text.substring(1, text.length - 1);
     }
     return text;
 }
@@ -89,9 +89,9 @@ export const obtainState = (): LocalData => {
 }
 
 export const syncLocalStorage = (timedNote: TimedNote) => {
-    localStorage.setItem(REPEAT_PERIOD, "\""+timedNote.repeatPeriod+"\"");
-    localStorage.setItem(REPEAT_QTY, "\"" + timedNote.repeatQty+ "\"");
-    localStorage.setItem(DISPLAY_AT, "\""+timedNote.time+"\"");
+    localStorage.setItem(REPEAT_PERIOD, "\"" + timedNote.repeatPeriod + "\"");
+    localStorage.setItem(REPEAT_QTY, "\"" + timedNote.repeatQty + "\"");
+    localStorage.setItem(DISPLAY_AT, "\"" + timedNote.time + "\"");
 }
 
 export const obtainUI = (): UIData => {

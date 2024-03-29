@@ -31,29 +31,29 @@ const SaveButton = () => {
         // @ts-ignore
         document.addEventListener(SYNC_TIMED_NOTES, (customEvent: CustomEvent) => {
             customEvent.preventDefault();
-            const update = syncState(current.listIndex,state,customEvent.detail);
-            if (update){
+            const update = syncState(current.listIndex, state, customEvent.detail);
+            if (update) {
                 setState(update);
             }
             saveClicked(true, true);
         });
     }
 
-    const getUpdateState = (allowOverwrite = false): UpdateState => {
+    const getUpdateState = (allowOverWrite = false): UpdateState => {
         const ui = obtainUI();
         const updateState: UpdateState = {
             current,
             stored: state,
             ui,
-            allowOverwrite
+            allowOverwrite: allowOverWrite
         };
         return updateState;
     }
 
-    const saveClicked = (override = false, ignoreTimedNote = false) => {
+    const saveClicked = (allowOverWrite = false, ignoreTimedNote = false) => {
         const saveBut = document.getElementById(SAVE_BUTTON_ID) as HTMLButtonElement;
         saveBut.disabled = true;
-        const updateState = getUpdateState(override);
+        const updateState = getUpdateState(allowOverWrite);
         try {
             const state = applyUpdate(updateState);
             setState(state);
@@ -79,7 +79,7 @@ const SaveButton = () => {
         }
         saveBut.disabled = false;
         current.unsaved = false;
-        current.sessionIndex = state.lists[current.listIndex]? state.lists[current.listIndex].sessions.length-1: 0;
+        current.sessionIndex = state.lists[current.listIndex] ? state.lists[current.listIndex].sessions.length - 1 : 0;
         setCurrent(current);
     }
 

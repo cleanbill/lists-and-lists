@@ -1,7 +1,7 @@
 "use client"
 import { useRef, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import { CURRENT_SESSION, DEFAULT_CURRENT, DEFAULT_STATE, LIST_AND_LISTS, ListData, REPEAT_PERIOD, REPEAT_QTY, RepeatPeriod, SAVE_SWITCH_EVENT, SEARCH_EVENT, SYNC_TIMED_NOTES, TIMED_NOTES, TimedNote } from "@/types";
+import { CURRENT_SESSION, DEFAULT_CURRENT, SAVE_SWITCH_EVENT, SEARCH_EVENT, SYNC_TIMED_NOTES, TIMED_NOTES, TimedNote } from "@/types";
 import TimePicker from "@/components/timePicker";
 import RepeatPicker from "@/components/repeatPicker";
 import { discard, setup } from "@/utils/workerUtils";
@@ -10,11 +10,11 @@ import SearchField from "@/components/searchField";
 import TitleField from "@/components/titleField";
 import SidePanel from "@/components/sidePanel";
 import SidePanelButton from "@/components/sidePanelButton";
-import { log } from "@/utils/logUtils";
 import TimeStampSaveTick from "@/components/timestampSaveTick";
 import Notes from "@/components/notes";
 import SessionPicker from "@/components/sessionPicker";
 import Foot from "@/components/foot";
+import { log } from "@/utils/logUtils";
 
 let workerStopped = true;
 

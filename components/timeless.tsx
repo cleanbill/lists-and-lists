@@ -2,7 +2,11 @@ import { DEFAULT_STATE, LIST_AND_LISTS, ListData, SEARCH_EVENT, TimedNote } from
 import { useMemo } from "react";
 import { useLocalStorage } from "usehooks-ts";
 
-const Timeless = () => {
+type Props = {
+    discard: Function
+}
+
+const Timeless = (props: Props) => {
 
     const [state, _setState] = useLocalStorage(LIST_AND_LISTS, DEFAULT_STATE);
 
@@ -16,7 +20,7 @@ const Timeless = () => {
         document.dispatchEvent(ce);
     }
 
-    if (notes.length == 0 ){
+    if (notes.length == 0) {
         return null;
     }
 
@@ -26,6 +30,7 @@ const Timeless = () => {
             {notes.map((noteDate: ListData, index: number) => (
                 <div key={"timer-" + index + noteDate.listTitle} className="grid grid-cols-[9fr,2fr,0fr] gap-1 text-yellow-700">
                     <button key={"title-" + index + noteDate.listTitle} onClick={(ev) => setSearchText(noteDate.listTitle)}>{noteDate.listTitle}</button>
+                    <button key={'del-time-' + index + noteDate.listTitle} onClick={() => props.discard(noteDate.listTitle)} className="text-red-500">x</button>
                 </div>
             ))}
         </div>

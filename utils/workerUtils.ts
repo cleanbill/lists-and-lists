@@ -1,9 +1,9 @@
 import { TimedNoteEvent, TimedNoteCommand, TimedNote, TimedNoteAction, RepeatPeriod } from "@/types";
-import { log } from "./logUtils";
+import { log } from "./dateUtils";
 
-let worker:any = null;
+let worker: any = null;
 
-export const setup = (w:any)=>{
+export const setup = (w: any) => {
     worker = w;
     return (changeSearchText: Function, setTimedNotes: Function) => (messageEvent: MessageEvent<TimedNoteEvent>) => {
         const command = messageEvent.data.command;
@@ -34,13 +34,13 @@ export const addTimedNote = (timedNote: TimedNote) => {
 export const discard = (id: string) => {
     const command = TimedNoteCommand.Take
     const timedNote: TimedNote = {
-      time: "",
-      id,
-      repeatPeriod: RepeatPeriod.None,
-      repeatQty: 0
+        time: "",
+        id,
+        repeatPeriod: RepeatPeriod.None,
+        repeatQty: 0
     };
     const message: TimedNoteAction = { command, timedNote };
     log('sending', message);
     worker?.postMessage(message);
-  }
+}
 

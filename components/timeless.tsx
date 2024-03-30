@@ -26,7 +26,7 @@ const Timeless = (props: Props) => {
 
     return (
         <div>
-            <h1>TIMELESS LIST</h1>
+            <h1 className="mt-3">TIMELESS LIST</h1>
             {notes.map((noteDate: ListData, index: number) => (
                 <div key={"timer-" + index + noteDate.listTitle} className="grid grid-cols-[9fr,2fr,0fr] gap-1 text-yellow-700">
                     <button key={"title-" + index + noteDate.listTitle} onClick={(ev) => setSearchText(noteDate.listTitle)}>{noteDate.listTitle}</button>

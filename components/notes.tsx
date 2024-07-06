@@ -28,7 +28,7 @@ const Notes = () => {
 
     const loseFocus = () => setFocus(false);
 
-    return <BlockNoteView onBlur={loseFocus} onFocus={focused} className={focus ? "m-3 main-box" : "m-3"} editor={editor} />;
+    return <BlockNoteView onBlur={loseFocus} onFocus={focused} className={focus ? "m-3 border border-black rounded" : "m-3"} editor={editor} />;
 }
 
 export default Notes;

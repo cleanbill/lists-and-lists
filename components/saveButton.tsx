@@ -87,7 +87,7 @@ const SaveButton = () => {
         <>
 
             <button id={SAVE_BUTTON_ID} onClick={() => saveClicked()} className="float-right mr-2 ml-10 mt-2 mb-3 bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:ring focus:ring-yellow-300  rounded-xl text-black pt-1 pb-1 pl-2 pr-2 ">Save</button>
-            {showSavingToast && <label className="float-left mr-1 ml-2 mt-2 mb-1 bg-red-200 rounded-xl text-black pt-1 pb-1 pl-2 pr-2 ">Saved</label>}
+            {showSavingToast && <label className="float-left mr-1 ml-2 mt-2 mb-1 bg-red-200 rounded-xl text-black pt-1 pb-1 pl-2 pr-2 fade-out-slow">Saved</label>}
             {showDuplicateToast && <button onClick={() => saveClicked(true)} className=" mr-1 ml-10 mt-2 mb-3 bg-red-200 rounded-xl text-black p-3 ">Cannot Save Duplicate List</button>}
         </>
     )

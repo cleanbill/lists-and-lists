@@ -1,5 +1,5 @@
 // @ts-ignore
-import { BlockNoteView, useBlockNote } from "@blocknote/react";
+import { BlockNoteView, useBlockNote, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/core/style.css";
 import { useLocalStorage } from "usehooks-ts";
 import { BlockNoteEditor } from "@blocknote/core";
@@ -17,8 +17,7 @@ const Notes = () => {
         setNote(block);
     };
     const initialContent = note;
-    const editor = useBlockNote({
-        onEditorContentChange,
+    const editor = useCreateBlockNote({
         // @ts-ignore
         initialContent
 

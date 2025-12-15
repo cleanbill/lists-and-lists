@@ -24,14 +24,14 @@ const SearchField = () => {
     if (!listening) {
         listening = true;
         // @ts-ignore
-        document.addEventListener(SEARCH_EVENT, (customEvent: CustomEvent) => {
+        window?.document.addEventListener(SEARCH_EVENT, (customEvent: CustomEvent) => {
             setSearchText(customEvent.detail);
             customEvent.preventDefault();
         });
     }
 
     useEffect(() => {
-        const field = document.getElementById('search-input') as HTMLInputElement;
+        const field = window.document.getElementById('search-input') as HTMLInputElement;
         if (current?.searchText != field.value) {
             log('searching for', field.value);
             setSearchText(field.value);
@@ -79,7 +79,7 @@ const SearchField = () => {
 
     const gone = () => {
         setSearchText("");
-        const field = document.getElementById('search-input') as HTMLInputElement;
+        const field = window.document.getElementById('search-input') as HTMLInputElement;
         field.value = '';
     }
 

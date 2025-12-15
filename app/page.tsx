@@ -19,7 +19,7 @@ import { log } from "@/utils/logUtils";
 let workerStopped = true;
 
 export default function Home() {
-  const workerRef = useRef<Worker>()
+  const workerRef = useRef<Worker>(null)
 
   const [current, setCurrent] = useLocalStorage(CURRENT_SESSION, DEFAULT_CURRENT);
   const [timedNotes, setTimedNotes] = useLocalStorage(TIMED_NOTES, [] as Array<TimedNote>);
@@ -119,14 +119,12 @@ export default function Home() {
             <RepeatPicker></RepeatPicker>
           </div>
           <SessionPicker></SessionPicker>
-          {/* <List></List> */}
           <Notes key={current?.listIndex + current?.sessionIndex || "unset"}></Notes>
           <TimeStampSaveTick></TimeStampSaveTick>
           {!showTimers && <SidePanelButton toggleSidePanel={toggleSidePanel}></SidePanelButton>}
         </section>
         <SaveButton></SaveButton>
         {blockedSwitchTitle && <button title="Click to save and switch" onClick={saveAndSwitch} className=" mr-1 ml-10 mt-2 mb-3 bg-red-200 rounded-xl text-black p-3 ">Unsaved - Cannot switch to {blockedSwitchTitle}</button>}
-        {/* {current.unsaved && <label className=" mr-1 ml-10 mt-2 mb-3 bg-red-200 rounded-xl text-black p-3 ">Unsaved</label>} */}
       </article>
     </main>
       <Foot></Foot>
